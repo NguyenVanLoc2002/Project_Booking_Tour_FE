@@ -1,0 +1,188 @@
+@keyframes zoomInOut {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.slide-background {
+  animation: zoomInOut 5s infinite ease-in-out;
+}
+
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Đảm bảo các phần tử bị ẩn trước khi animation bắt đầu */
+.hidden-animation {
+  opacity: 0;
+}
+
+.animate-left {
+  animation: slideInLeft 2s ease forwards;
+}
+
+.animate-right {
+  animation: slideInRight 2s ease forwards;
+}
+
+@keyframes roll-left {
+  0% {
+    transform: translateX(-300%) rotate(-360deg);
+  }
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+}
+
+@keyframes roll-right {
+  0% {
+    transform: translateX(300%) rotate(360deg);
+  }
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+}
+
+.animate-roll-left {
+  animation: roll-left 3s ease-in-out forwards;
+}
+
+.animate-roll-right {
+  animation: roll-right 3s ease-in-out forwards;
+}
+
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0px rgba(63, 208, 212);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(63, 208, 212);
+  }
+  100% {
+    box-shadow: 0 0 0px rgba(63, 208, 212);
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite;
+}
+
+/* Animation Footer */
+.dot {
+  @apply absolute bg-customColor rounded-full opacity-80;
+  width: 3px;
+  height: 3px;
+  animation: move 10s infinite ease-in-out;
+  top: var(--start-top);
+  left: var(--start-left);
+}
+
+@keyframes move {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(var(--x), var(--y));
+    opacity: 0.8;
+  }
+}
+.custom-table {
+  width: 100%;
+  border: 1px solid #3fd0d4; 
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.custom-table .ant-table-thead > tr > th {
+  border-bottom: 1px solid #3fd0d4;
+
+}
+
+.custom-table .ant-table-tbody > tr:hover {
+  background-color: #f5f5f5; /* Màu nền khi hover */
+}
+.ant-form-item-label > label {
+  font-weight: 500;
+  font-size: 18;
+}
+/* CSS */
+.custom-border .ant-select-selector,
+.custom-border .ant-picker,
+.custom-border .ant-input {
+    border-color: #3fd0d4 !important;
+    /* box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2) !important; */
+}
+/* Cấu hình chiều cao cố định và cuộn cho CKEditor */
+.ck-editor__editable {
+  height: 400px !important; /* Chiều cao cố định */
+  overflow-y: auto; /* Bật cuộn dọc khi nội dung vượt quá chiều cao */
+}
+
+.notice-box {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(90deg, #ff0099, #ff66cc);
+  color: white;
+  border-radius: 30px;
+  position: relative;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  height: 35px;
+  width: 50%;
+}
+
+.notice-box .icon {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+  object-fit: cover;
+}
+
+.notice-box .text {
+  font-size: 14px;
+  white-space: nowrap;
+
+}
+
+.notice-box::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 15px;
+  height: 15px;
+  background: white;
+  border-radius: 0 0 30px 0;
+  transform: translate(50%, 50%);
+}
+
+
+

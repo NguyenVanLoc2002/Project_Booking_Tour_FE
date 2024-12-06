@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "es6",                                // Đặt mục tiêu đầu ra JavaScript (ES6 trở lên là khuyến nghị)
+    "lib": ["dom", "dom.iterable", "esnext"],       // Sử dụng các thư viện cần thiết cho dự án React
+    "allowJs": true,                                // Cho phép biên dịch các file .js
+    "skipLibCheck": true,                           // Bỏ qua kiểm tra kiểu của các thư viện (tăng tốc độ biên dịch)
+    "esModuleInterop": true,                        // Hỗ trợ import/export theo chuẩn ES
+    "allowSyntheticDefaultImports": true,           // Cho phép import mặc định từ các mô-đun không có export mặc định
+    "strict": true,                                 // Bật chế độ kiểm tra nghiêm ngặt (khuyến nghị)
+    "forceConsistentCasingInFileNames": true,       // Buộc phải nhất quán kiểu chữ trong tên file
+    "module": "esnext",                             // Sử dụng module ES6
+    "moduleResolution": "node",                     // Giải quyết module theo kiểu Node.js
+    "resolveJsonModule": true,                      // Cho phép import file JSON
+    "isolatedModules": true,                        // Bật chế độ module isolated (khuyến nghị cho dự án React)
+    "noEmit": true,                                 // Không phát sinh file JavaScript (chỉ kiểm tra lỗi TypeScript)
+    "jsx": "react-jsx"                              // Đặt chế độ JSX cho React 17 trở lên (React 17+ khuyến nghị dùng "react-jsx")
+  },
+  "include": ["src"],                               // Bao gồm thư mục chứa mã nguồn
+  "exclude": ["node_modules"]                       // Loại trừ thư mục node_modules
+}
