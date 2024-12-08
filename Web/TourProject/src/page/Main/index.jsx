@@ -33,8 +33,8 @@ function MainLayout() {
   const [isAscending, setIsAscending] = useState(true);
   const [recommendTour, setRecommendTour] = useState([]);
   const token = localStorage.getItem("token");
-  const location = useLocation(); 
-  
+  const location = useLocation();
+
   const { user } = useUser();
 
   const images = [bn1, bn2];
@@ -140,7 +140,7 @@ function MainLayout() {
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
-    const bookingId = urlParams.get('bookingId'); 
+    const bookingId = urlParams.get("bookingId");
 
     // Nếu có bookingId, điều hướng đến trang thanh toán
     if (bookingId) {
@@ -218,7 +218,6 @@ function MainLayout() {
     fetchToursByRegion("SOUTH");
   }, []);
 
-
   return (
     <>
       <div className="w-full h-full flex flex-col">
@@ -293,11 +292,7 @@ function MainLayout() {
               </div>
               <div className="flex flex-wrap justify-center space-x-4 p-4 ">
                 {recommendTour.slice(0, 4).map((tour, index) => (
-                  <TourCard
-                    key={tour.tourId || index}
-                    tour={tour}
-                    user={user}
-                  />
+                  <TourCard key={tour.id || index} tour={tour} user={user} />
                 ))}
               </div>
             </div>

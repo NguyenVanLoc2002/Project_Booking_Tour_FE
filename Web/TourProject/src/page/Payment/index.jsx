@@ -126,7 +126,7 @@ const PaymentPage = () => {
                 </p>
                 <p className="text-lg text-gray-600">
                   <span className="font-bold">Ngày khởi hành:</span>{" "}
-                  {/* {formatDate(tour?.departureDate)} */}
+                  {formatDate(tour.departureDate ? tour.departureDate : "")}
                 </p>
                 <p className="text-lg text-gray-600">
                   <span className="font-bold">Điểm xuất phát:</span>{" "}
@@ -138,13 +138,8 @@ const PaymentPage = () => {
                 </p>
                 <p className="text-lg text-gray-600">
                   <span className="font-bold">Giá tour:</span>{" "}
-                  {/* {formatCurrency(tour?.price)} VND */}
+                  {formatCurrency(tour.price ? tour.price :0 )} 
                 </p>
-                {tour.includePromotions && (
-                  <p className="text-lg text-gray-600">
-                    <span className="font-bold">Khuyến mãi:</span> Có
-                  </p>
-                )}
                 <p className="text-lg text-gray-600">
                   <span className="font-bold">Thời gian:</span> {tour.day} ngày{" "}
                   {tour.night} đêm
@@ -210,7 +205,7 @@ const PaymentPage = () => {
             </h3>
             <p className="text-gray-600">
               Sau khi thanh toán thành công, thông tin vé của bạn sẽ được cập
-              nhật.
+              nhật lên hệ thống. Hãy giữ lại thông tin vé để sử dụng khi cần.
             </p>
           </div>
         </div>
