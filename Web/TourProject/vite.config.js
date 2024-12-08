@@ -10,7 +10,7 @@ export default defineConfig({
     },
   },
   server: {
-    port: 3000, // Cổng bạn sử dụng (tuỳ chỉnh nếu cần)
+    historyApiFallback: true,  // Cho phép React Router xử lý các URL động
   },
   build: {
     outDir: 'dist', // Thư mục build (mặc định là 'dist')
