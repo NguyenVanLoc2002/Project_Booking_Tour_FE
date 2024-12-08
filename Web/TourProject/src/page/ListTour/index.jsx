@@ -62,7 +62,7 @@ function ListTour() {
   const [sortType, setSortType] = useState("");
   const [typeTour, settypeTour] = useState("");
   const { tours } = location.state || {};
-  console.log("Matching: ", tours);
+  console.log("Matching: ", tourList);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const showModal = () => {
@@ -102,18 +102,17 @@ function ListTour() {
       });
 
       if (response.status === 404 || response.data.content.length === 0) {
-        alert("Không tìm thấy tour phù hợp");
-        return { tours: [], totalPages: 0 };
+        message.info("Không tìm thấy tour phù hợp");
+        return ;
       }
-
       return {
         tours: response.data.content,
         totalPages: response.data?.totalPages || 0,
       };
     } catch (error) {
-      console.error("Lỗi khi tải dữ liệu tours:", error);
+      message.error("Lỗi khi tải dữ liệu tours:", error);
       alert("Không tìm thấy tour phù hợp");
-      return { tours: [], totalPages: 0 };
+      return ;
     }
   };
 
@@ -200,7 +199,6 @@ function ListTour() {
     criteria,
     tours,
   ]);
-  console.log("List Tour:", tourList);
 
   //Animation text
   useEffect(() => {
@@ -290,10 +288,6 @@ function ListTour() {
     }
     setCriteria(values); // Lưu giá trị từ Modal
     console.log("Criteria set in ListTour:", values);
-  };
-
-  const handleNavigateDetailTour = (tour) => {
-    navigate("/detail", { state: { tour } });
   };
 
   //Thực hiện phân trang
@@ -512,13 +506,7 @@ function ListTour() {
           {/* Danh sách tour */}
           <div className="flex flex-wrap justify-center space-x-4 p-4">
             {tourList.map((tour, index) => (
-              <button
-                key={tour.tourId ? tour.tourId : `${index}`}
-                onClick={() => handleNavigateDetailTour(tour)}
-                className="mb-8"
-              >
-                <TourCard key={tour.tourId} tour={tour} user={user} />
-              </button>
+                <TourCard key={tour.tourId || index} tour={tour} user={user} />
             ))}
           </div>
 

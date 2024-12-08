@@ -33,7 +33,7 @@ import axios from "axios";
 import ModalSetCriteria from "../../components/ModalSetCriteria";
 import { Button } from "antd";
 import { useUser } from "../../contexts/UserContext";
-import { deleteInteraction } from "../../services/api";
+import { deleteInteraction, handleInteraction } from "../../services/api";
 
 function SavedTour() {
   const navigate = useNavigate();
@@ -369,8 +369,9 @@ function SavedTour() {
     );
   };
 
-  const handleNavigateDetailTour = (tour) => {
-    navigate("/detail", { state: { tour } });
+  const handleNavigateDetailTour = async ( tour) => {
+    if (user) await handleInteraction(tour.tourId, "VIEW", user, token);
+    navigate(`/detail?ticketId=${tour.ticketId}`);
   };
 
   //Thực hiện phân trang
@@ -519,7 +520,7 @@ function SavedTour() {
                 {tourList.map((tour, index) => (
                   <button
                     key={tour.tourId ? tour.tourId : `${index}`}
-                    onClick={() => handleNavigateDetailTour(tour)}
+                    onClick={() => handleNavigateDetailTour( tour)}
                     className="mb-8"
                   >
                     <TourCardList tour={tour} />
@@ -531,7 +532,7 @@ function SavedTour() {
                 {tourList.map((tour, index) => (
                   <button
                     key={tour.tourId ? tour.tourId : `${index}`}
-                    onClick={() => handleNavigateDetailTour(tour)}
+                    onClick={() => handleNavigateDetailTour( tour)}
                     className="mb-8"
                   >
                     <TourCardGrid tour={tour} />
