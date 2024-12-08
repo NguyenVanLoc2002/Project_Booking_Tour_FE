@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Button, Modal, Input } from "antd";
 import { MessageOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 const ChatBot = () => {
+  const navigation = useNavigate();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [messages, setMessages] = useState([
     {
@@ -53,6 +55,10 @@ const ChatBot = () => {
 
       setInputMessage("");
     }
+  };
+
+  const handleClick = (ticketId) => {
+    navigation(`/detail?ticketId=${ticketId}`);
   };
 
   return (
@@ -107,7 +113,7 @@ const ChatBot = () => {
                       <button
                         key={buttonIndex}
                         onClick={() => {
-                          window.location.href = button.url; 
+                          handleClick(button.url); 
                         }}
                         className="w-full bg-blue-500 text-white rounded-lg py-2"
                       >
