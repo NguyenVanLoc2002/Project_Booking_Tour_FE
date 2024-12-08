@@ -1,9 +1,12 @@
 {
-    "routes": [
-      {
-        "src": "/.*",
-        "dest": "/index.html"
-      }
-    ]
-  }
-  
+  "routes": [
+    {
+      "src": "/detail.*",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/.*",
+      "dest": "/index.html"
+    }
+  ]
+}

@@ -34,6 +34,7 @@ const TourCard = ({ tour, user }) => {
     return `${day}/${month}/${year}`; // Trả về định dạng "dd/mm/yyyy"
   };
 
+  
   const handleNavigateDetail = async (event, tour) => {
     if (event.target.closest("button")) return;
     if (user) await handleInteraction(tour.tourId, "VIEW", user, token);
@@ -42,7 +43,7 @@ const TourCard = ({ tour, user }) => {
 
   const handleSaveTour = async (tour) => {
     if (user) {
-      await handleInteraction(tour.tourId, "SAVED");
+      await handleInteraction(tour.tourId, "SAVED",user, token);
       setShowModal(true);
       setSavedTourMessage(
         `Tour "${tour.name}" đã được lưu vào danh sách yêu thích!`
@@ -62,7 +63,7 @@ const TourCard = ({ tour, user }) => {
 
   return (
     <div
-      className="bg-white flex flex-col justify-between font-sriracha w-80 h-80 shadow-2xl shadow-gray-500/50 rounded-lg group overflow-hidden relative"
+      className="bg-white flex flex-col justify-between font-sriracha w-80 h-80 shadow-2xl shadow-gray-500/50 rounded-lg group overflow-hidden relative mb-10"
       onClick={(e) => handleNavigateDetail(e, tour)}
     >
       {/* Ảnh tour */}

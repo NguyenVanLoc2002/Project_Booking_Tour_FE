@@ -42,7 +42,6 @@ import { addPreference } from "../../services/api";
 import { message } from "antd";
 
 function ListTour() {
-  const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const region = queryParams.get("region");
@@ -79,13 +78,13 @@ function ListTour() {
         "Khám Phá Miền Bắc - Vùng Đất Văn Hóa Lịch Sử, Thiên Nhiên Hùng Vĩ và Ẩm Thực Đặc Sắc"
       );
       setRegionTour("MIỀN BẮC");
-    }else if(region === "CENTRAL"){
+    } else if (region === "CENTRAL") {
       setUrlImageBanner(bannerMT);
       setTitle(
         "Du Lịch Miền Trung – Nơi Giao Thoa Giữa Văn Hóa Lịch Sử, Biển Cả và Món Ngon Truyền Thống"
       );
       setRegionTour("MIỀN TRUNG");
-    }else{
+    } else {
       setUrlImageBanner(bannerMN);
       setTitle(
         "Hành Trình Miền Nam – Từ Sài Gòn Sầm Uất Đến Những Cảnh Đẹp Hoang Sơ và Ẩm Thực Đặc Sắc"
@@ -101,18 +100,16 @@ function ListTour() {
         params: { page: currentPage, size: toursPerPage },
       });
 
-      if (response.status === 404 || response.data.content.length === 0) {
-        message.info("Không tìm thấy tour phù hợp");
-        return ;
+      if (response.data === null) {
+        return { tours: tourList, totalPages: totalPages };
       }
+
       return {
         tours: response.data.content,
         totalPages: response.data?.totalPages || 0,
       };
     } catch (error) {
-      message.error("Lỗi khi tải dữ liệu tours:", error);
-      alert("Không tìm thấy tour phù hợp");
-      return ;
+      alert("Không tìm thấy tour", error);
     }
   };
 
@@ -506,7 +503,7 @@ function ListTour() {
           {/* Danh sách tour */}
           <div className="flex flex-wrap justify-center space-x-4 p-4">
             {tourList.map((tour, index) => (
-                <TourCard key={tour.tourId || index} tour={tour} user={user} />
+              <TourCard key={tour.tourId || index} tour={tour} user={user} />
             ))}
           </div>
 

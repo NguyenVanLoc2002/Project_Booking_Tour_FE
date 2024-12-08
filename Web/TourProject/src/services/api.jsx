@@ -107,7 +107,6 @@ export const deleteInteraction = async (interactionId, token) => {
   }
 };
 
-
 //Hàm thực hiện thay đổi mật khẩu
 export const changePassword = async (
   email,
@@ -208,18 +207,15 @@ export const updateInfomation = async (
 };
 
 //Hàm lấy thông tin chi tiết tour
-export const fetchTourDetail = async (
-  ticketId
-) => {
+export const fetchTourDetail = async (ticketId) => {
   try {
     const response = await axios.get(
       `${BASE_URL}/tours/getById?ticketId=${ticketId}`,
-      {
-      },
+      {}
     );
     return response.data;
   } catch (error) {
-      console.error("Lỗi khi lấy thông tin tour:", error);
-      throw new Error("Lỗi khi lấy thông tin tour. Vui lòng thử lại sau.");
+    console.error("Lỗi khi lấy thông tin tour:", error);
+    throw new Error("Lỗi khi lấy thông tin tour. Vui lòng thử lại sau.");
   }
 };
