@@ -37,7 +37,7 @@ const DetailBooking = ({ visible, onClose, data }) => {
       dataIndex: "totalAmount",
       key: "totalAmount",
       render: (totalAmount) => {
-        return totalAmount ? formatCurrency(totalAmount) : "Chưa xác định";
+        return totalAmount ? formatCurrency(totalAmount*24000) : "Chưa xác định";
       },
     },
   ];

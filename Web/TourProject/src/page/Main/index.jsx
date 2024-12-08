@@ -18,7 +18,7 @@ import { GiCommercialAirplane, GiShipBow } from "react-icons/gi";
 import { BsCalendar4Week, BsCalendarHeart } from "react-icons/bs";
 import { TiWeatherPartlySunny } from "react-icons/ti";
 import Footer from "../../layouts/Footer";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ChatBot from "../../layouts/ChatBot";
 import TourCard from "../../components/TourCard";
 import { useUser } from "../../contexts/UserContext";
@@ -33,7 +33,8 @@ function MainLayout() {
   const [isAscending, setIsAscending] = useState(true);
   const [recommendTour, setRecommendTour] = useState([]);
   const token = localStorage.getItem("token");
-
+  const location = useLocation(); 
+  
   const { user } = useUser();
 
   const images = [bn1, bn2];
@@ -136,6 +137,16 @@ function MainLayout() {
       });
     };
   }, []);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const bookingId = urlParams.get('bookingId'); 
+
+    // Nếu có bookingId, điều hướng đến trang thanh toán
+    if (bookingId) {
+      navigate(`/payment?bookingId=${bookingId}`);
+    }
+  }, [location]);
 
   useEffect(() => {
     const fetchRecommendation = async () => {
