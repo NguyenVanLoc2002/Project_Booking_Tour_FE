@@ -17,6 +17,7 @@ import {
 import axios from "axios";
 import { useUser } from "../../contexts/UserContext";
 import { useNavigate } from "react-router-dom";
+import ChatBot from "../../layouts/ChatBot";
 
 
 function Bookings() {
@@ -338,6 +339,7 @@ function Bookings() {
         onClose={handleCloseCancel}
         data={tourData}
       />
+      <ChatBot />
       <Footer />
     </div>
   );

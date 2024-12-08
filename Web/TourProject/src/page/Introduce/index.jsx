@@ -16,6 +16,7 @@ import { GiCommercialAirplane, GiShipBow } from "react-icons/gi";
 import { BsCalendar4Week, BsCalendarHeart } from "react-icons/bs";
 import { TiWeatherPartlySunny } from "react-icons/ti";
 import Footer from "../../layouts/Footer";
+import ChatBot from "../../layouts/ChatBot";
 
 function Introduce() {
 
@@ -95,6 +96,7 @@ function Introduce() {
           </div>
         </div>
 
+        <ChatBot />
         {/* Footer */}
         <Footer />
       </div>

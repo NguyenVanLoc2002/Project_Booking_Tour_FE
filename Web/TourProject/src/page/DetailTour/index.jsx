@@ -8,6 +8,7 @@ import DieuKien from "./component/DieuKien";
 import ChuongTrinh from "./component/ChuongTrinh";
 import { useLocation } from "react-router-dom";
 import { fetchTourDetail } from "../../services/api";
+import ChatBot from "../../layouts/ChatBot";
 function DetailTour() {
   const [tabNameSelect, setTabNameSelect] = useState("ChuongTrinh");
   const location = useLocation();
@@ -160,6 +161,7 @@ function DetailTour() {
             )}
           </div>
         </div>
+        <ChatBot />
         {/* Footer */}
         <Footer />
       </div>

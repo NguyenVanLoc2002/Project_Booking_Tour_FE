@@ -34,6 +34,7 @@ import ModalSetCriteria from "../../components/ModalSetCriteria";
 import { Button } from "antd";
 import { useUser } from "../../contexts/UserContext";
 import { deleteInteraction, handleInteraction } from "../../services/api";
+import ChatBot from "../../layouts/ChatBot";
 
 function SavedTour() {
   const navigate = useNavigate();
@@ -579,6 +580,7 @@ function SavedTour() {
           </div>
         </div>
 
+        <ChatBot />
         {/* Footer */}
         <Footer />
       </div>

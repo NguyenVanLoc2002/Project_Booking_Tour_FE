@@ -7,6 +7,7 @@ import Menu from "../../layouts/Menu";
 import { useUser } from "../../contexts/UserContext";
 import { handleInteraction } from "../../services/api";
 import { useNavigate } from "react-router-dom";
+import ChatBot from "../../layouts/ChatBot";
 
 const PaymentPage = () => {
   const navigate = useNavigate();
@@ -213,7 +214,7 @@ const PaymentPage = () => {
             </p>
           </div>
         </div>
-
+        <ChatBot />
         {/* Footer Section */}
         <Footer />
       </div>

@@ -7,6 +7,7 @@ import ModalSetCriteria from "../../components/ModalSetCriteria";
 import { useUser } from "../../contexts/UserContext";
 import { changePassword, updateInfomation } from "../../services/api";
 import { message } from "antd";
+import ChatBot from "../../layouts/ChatBot";
 
 function Account() {
   const { user } = useUser();
@@ -541,7 +542,7 @@ function Account() {
             </div>
           </div>
         </div>
-
+        <ChatBot />
         {/* Footer */}
         <Footer />
       </div>

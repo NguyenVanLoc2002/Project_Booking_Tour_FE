@@ -38,6 +38,7 @@ import ModalSetCriteria from "../../components/ModalSetCriteria";
 import { useUser } from "../../contexts/UserContext";
 import { FaHeart } from "react-icons/fa";
 import TourCard from "../../components/TourCard";
+import ChatBot from "../../layouts/ChatBot";
 import { addPreference } from "../../services/api";
 import { message } from "antd";
 
@@ -543,6 +544,7 @@ function ListTour() {
             </button>
           </div>
         </div>
+        <ChatBot />
 
         {/* Footer */}
         <Footer />

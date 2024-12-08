@@ -6,6 +6,7 @@ import Menu from "../../layouts/Menu";
 import Footer from "../../layouts/Footer";
 import { useLocation } from "react-router-dom";
 import { useUser } from "../../contexts/UserContext";
+import ChatBot from "../../layouts/ChatBot";
 
 function Booking() {
   const location = useLocation();
@@ -811,7 +812,7 @@ function Booking() {
             </div>
           </div>
         </div>
-
+        <ChatBot />
         {/* Footer */}
         <Footer />
       </div>
