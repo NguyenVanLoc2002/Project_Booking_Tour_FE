@@ -19,6 +19,7 @@ import {
   Upload,
   Modal,
   Typography,
+  message,
 } from "antd";
 import { FaPlane } from "react-icons/fa";
 const { Text } = Typography;
@@ -28,12 +29,29 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import dayjs from "dayjs";
 import { useUser } from "../contexts/UserContext";
 import { addPreference } from "../services/api";
-const ModalSetCriteria = ({ visible, onClose, onSubmit }) => {
+
+const regionMap = {
+  NORTH: "Miền Bắc",
+  CENTRAL: "Miền Trung",
+  SOUTH: "Miền Nam",
+};
+
+const ModalSetCriteria = ({ region, visible, onClose, onSubmit }) => {
   const [formValues, setFormValues] = useState({
+    region: region,
     maxCost: 6000000,
     maxDuration: 0,
     startDate: dayjs().format("YYYY-MM-DD"),
   });
+
+  useEffect(() => {
+    setFormValues((prevState) => ({
+      ...prevState,
+      region: region || "", // Cập nhật lại region khi `region` thay đổi
+    }));
+  }, [region]);
+
+  console.log("Region: ", region);
 
   const maxCosts = [
     { value: 4000000, label: "Dưới 4.000.000 đ" },
@@ -165,8 +183,19 @@ const ModalSetCriteria = ({ visible, onClose, onSubmit }) => {
 
   const handleRangePickerChange = (dates, dateStrings) => {
     if (dates) {
-      const startDate = dates[0];
-      const endDate = dates[1];
+      let startDate = dates[0];
+      let endDate = dates[1];
+
+      if (endDate.isBefore(startDate)) {
+        endDate = startDate.add(1, "day");
+      }
+
+      if (startDate.isSame(endDate, "day")) {
+        message.error(
+          "Vui lòng chọn lại ngày kết thúc. Ngày kết thúc không thể bằng ngày bắt đầu."
+        );
+        return;
+      }
 
       const maxDuration = endDate.diff(startDate, "day");
 
@@ -190,10 +219,10 @@ const ModalSetCriteria = ({ visible, onClose, onSubmit }) => {
   const today = dayjs().format("DD/MM/YYYY");
   dayjs.extend(customParseFormat);
 
-
-  const submit =  () => {
+  const submit = () => {
     onSubmit(formValues); // Gửi giá trị lên ListTour
     setFormValues({
+      region: region,
       maxCost: 6000000,
       maxDuration: 0,
       startDate: dayjs().format("YYYY-MM-DD"),
@@ -203,6 +232,7 @@ const ModalSetCriteria = ({ visible, onClose, onSubmit }) => {
 
   const handleCloseModal = () => {
     setFormValues({
+      region: region,
       maxCost: 6000000,
       maxDuration: 0,
       startDate: dayjs().format("YYYY-MM-DD"),
@@ -243,12 +273,18 @@ const ModalSetCriteria = ({ visible, onClose, onSubmit }) => {
                       rules={[{ required: true }]}
                     >
                       <Select
-                        value={formValues.region}
-                        defaultValue={formValues.region}
-                        onChange={(value) => handleChange("region", value)}
-                        options={regions}
+                        value={formValues.region} 
+                        // onChange={(value) =>
+                        //   setFormValues({ ...formValues, region: value })
+                        // } 
                         style={{ height: 40 }}
-                      />
+                      >
+                        {Object.keys(regionMap).map((key) => (
+                          <Select.Option key={key} value={key}>
+                            {regionMap[key]}{" "}
+                          </Select.Option>
+                        ))}
+                      </Select>
                     </Form.Item>
                   </Col>
                   <Col span={11}>
@@ -279,13 +315,19 @@ const ModalSetCriteria = ({ visible, onClose, onSubmit }) => {
                     >
                       <RangePicker
                         defaultValue={[
-                          dayjs(today, dateFormat),
-                          dayjs(today, dateFormat),
+                          dayjs(today, dateFormat), // Ngày bắt đầu là ngày hiện tại
+                          dayjs(today, dateFormat).add(1, "day"), // Ngày kết thúc mặc định là ngày sau ngày hiện tại
                         ]}
                         format={dateFormat}
                         onChange={handleRangePickerChange}
                         style={{ height: 40, width: "100%" }}
                         className="rounded-md"
+                        disabledDate={(current) =>
+                          current && current < dayjs().startOf("day")
+                        } // Ngày bắt đầu không được chọn trước ngày hôm nay
+                        disabledDateEnd={(current, startDate) =>
+                          startDate && current < startDate
+                        }
                       />
                     </Form.Item>
                   </Col>

@@ -25,7 +25,7 @@ const ChatBot = () => {
   const handleSend = async () => {
     if (inputMessage.trim()) {
       setMessages([...messages, { text: inputMessage, sender: "user" }]);
-
+      setInputMessage("");
       try {
         const response = await fetch(
           "http://localhost:5005/webhooks/rest/webhook",
@@ -52,8 +52,6 @@ const ChatBot = () => {
       } catch (error) {
         console.error("Lỗi khi gửi tin nhắn:", error);
       }
-
-      setInputMessage("");
     }
   };
 
@@ -113,7 +111,7 @@ const ChatBot = () => {
                       <button
                         key={buttonIndex}
                         onClick={() => {
-                          handleClick(button.url); 
+                          handleClick(button.url);
                         }}
                         className="w-full bg-blue-500 text-white rounded-lg py-2"
                       >

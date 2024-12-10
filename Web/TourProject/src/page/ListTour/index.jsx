@@ -64,6 +64,9 @@ function ListTour() {
   const { tours } = location.state || {};
   console.log("Matching: ", tourList);
 
+
+  
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const showModal = () => {
     setIsModalVisible(true);
@@ -183,20 +186,16 @@ function ListTour() {
   };
 
   useEffect(() => {
+    setCriteria(null);
+  },[region, name]);
+  
+  useEffect(() => {
+   
     fetchTours();
     if (tours) {
       setTourList(tours);
     }
-  }, [
-    name,
-    region,
-    currentPage,
-    toursPerPage,
-    sortType,
-    typeTour,
-    criteria,
-    tours,
-  ]);
+  }, [name, region, currentPage, toursPerPage, sortType, typeTour, criteria]);
 
   //Animation text
   useEffect(() => {
@@ -485,6 +484,7 @@ function ListTour() {
         {/* Tittle */}
         <div className="">
           <ModalSetCriteria
+            region={region}
             visible={isModalVisible}
             onClose={handleClose}
             onSubmit={handleSetCriteria}
