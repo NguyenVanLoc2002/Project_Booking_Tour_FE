@@ -3,6 +3,7 @@ import { View, Text, ImageBackground, Pressable, Button, StyleSheet, TextInput, 
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import ListBooking from "./component/ListBooking";
 import axiosInstance from "./../../api/axiosInstance";
+import Ionicons from '@expo/vector-icons/Ionicons';
 const BookingComponent = ({ navigation, route }) => {
     const [pendingBookings, setPendingBookings] = useState([]); // Booking chờ xác nhận
     const [confirmedBookings, setConfirmedBookings] = useState([]); // Booking đã xác nhận
@@ -45,7 +46,7 @@ const BookingComponent = ({ navigation, route }) => {
             // Lưu trữ các loại booking
             setPendingBookings(pendingBookings);
             setConfirmedBookings(confirmed);
-            setListBooking(confirmed);
+            setListBooking(pendingBookings);
         } catch (error) {
             console.error("Error fetching customer processing bookings:", error);
         }
@@ -77,7 +78,10 @@ const BookingComponent = ({ navigation, route }) => {
             getCustomerPaidAndCancelledBookings(user.userId);
         }
     }, []);
-
+    const reload = () => {
+        getCustomerProcessingBookings(user.userId);
+        getCustomerPaidAndCancelledBookings(user.userId);
+    }
     // //trang thai 1 cho thanh toan, 2 da dat, 3 da hoan thanh, 4 da huy
     // const [listBooking, setListBooking] = useState([
     //     {
@@ -263,8 +267,6 @@ const BookingComponent = ({ navigation, route }) => {
     // ]);
     const [selectTrangThai, setSelectTrangThai] = useState(1);
     const setTrangThai = (loai) => {
-        console.log(pendingBookings)
-        console.log(confirmedBookings)
         setSelectTrangThai(loai);
         if (loai == 1)
             setListBooking(pendingBookings);
@@ -277,11 +279,11 @@ const BookingComponent = ({ navigation, route }) => {
     };
     const loaiBooking = (loai) => {
         if (loai == 1)
-            return "Chờ thanh toán"
+            return "Chờ xác nhận"
         else if (loai == 2)
-            return "Đã đặt"
+            return "Đã xác nhận"
         else if (loai == 3)
-            return "Đã hoàn thành"
+            return "Đã thanh toán"
         else if (loai == 4)
             return "Đã hủy"
     };
@@ -290,12 +292,12 @@ const BookingComponent = ({ navigation, route }) => {
             <ImageBackground source={{
                 uri: "https://res.cloudinary.com/doqbelkif/image/upload/v1726601540/656c046a-02ef-4286-8f9f-34ca7ef6e82a.png"
             }} resizeMode="cover" style={styles.imageBia}>
-                <View style={styles.header}>
+                {/* <View style={styles.header}>
                     <FontAwesome5 name={"search"} size={24} color={"black"} />
                     <TextInput placeholder="Nhập vào đây để tìm kiếm" style={styles.buttonSearch}>
 
                     </TextInput>
-                </View>
+                </View> */}
             </ImageBackground>
             <View style={styles.viewBox}>
                 {/* Main Options */}
@@ -333,7 +335,10 @@ const BookingComponent = ({ navigation, route }) => {
                 </View>
             </View>
             <View style={{ paddingTop: 20 }}>
-                <Text style={styles.tieuDe}>{loaiBooking(selectTrangThai)}</Text>
+                <View style={{ display: 'flex', flexDirection:"row",justifyContent: "space-between" }}>
+                    <Text style={styles.tieuDe}>{loaiBooking(selectTrangThai)}</Text>
+                    <TouchableOpacity onPress={() => reload()}><Ionicons name="reload" size={24} color="black" /></TouchableOpacity>
+                </View>
                 <ListBooking listBooking={listBooking} navigation={navigation} />
             </View>
         </ScrollView>

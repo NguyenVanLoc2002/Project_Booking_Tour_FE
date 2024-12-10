@@ -30,11 +30,17 @@ const DatTour = ({ navigation, route }) => {
         { label: 'Quận 2', value: 'UK' },
         { label: 'Quận 3', value: 'USA' },
     ]
+    const listPhuong = [
+        { label: 'Phường 4', value: 'VN' },
+        { label: 'Phường 1', value: 'Fran' },
+        { label: 'Phường 2', value: 'UK' },
+        { label: 'Quận 3', value: 'USA' },
+    ]
     const [selectedQuocGia, setSelectedQuocGia] = useState(listTinh[0].value);
     const [selectedQuocTich, setSelectedQuocTich] = useState(listQuan[0].value);
     const [selectedTinh, setSelectedTinh] = useState("Hồ Chí Minh");
     const [selectedQuan, setSelectedQuan] = useState("Gò Vấp");
-    const [selectedPhuong, setSelectedPhuong] = useState("Phường 1");
+    const [selectedPhuong, setSelectedPhuong] = useState("Phường 4");
     
     const [adults, setAdults] = useState(1);
     const [children, setChildren] = useState(0);
@@ -73,6 +79,8 @@ const DatTour = ({ navigation, route }) => {
     const descInfants = () => setInfants((prev) => (prev > 0 ? prev - 1 : 0));
 
     const formatDate = (dateString) => {
+
+        // Đảm bảo luôn hiển thị 2 chữ số cho ngày và tháng
         const formattedDay = dateString[2].toString().padStart(2, "0");
         const formattedMonth = dateString[1].toString().padStart(2, "0");
         return `${formattedDay}/${formattedMonth}/${dateString[0]}`;
@@ -345,7 +353,7 @@ const DatTour = ({ navigation, route }) => {
                                 selectedValue={selectedQuocTich}
                                 onValueChange={(itemValue) => setSelectedQuocTich(itemValue)}
                             >
-                                {listQuan.map((item, index) => (
+                                {listPhuong.map((item, index) => (
                                     <Picker.Item key={index} label={item.label} value={item.value} style={styles.textPicker} />
                                 ))}
                             </Picker>

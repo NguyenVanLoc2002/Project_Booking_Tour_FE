@@ -37,7 +37,7 @@ const ListBooking = ({ navigation, route, listBooking }) => {
 
                     <Pressable
                         style={[styles.itemTour, { backgroundColor: mauTrangThai(booking?.bookingDTO?.statusBooking) }]}
-                    onPress={() => { navigation.navigate("DetailTour", { tour: booking?.tourDTO }); }}
+                        onPress={() => { navigation.navigate("DetailTour", { tour: booking?.tourDTO }); }}
                     >
                         <View style={styles.tour}>
                             <View style={styles.avt}>
@@ -58,11 +58,13 @@ const ListBooking = ({ navigation, route, listBooking }) => {
                                 <View style={styles.row}><AntDesign name="team" size={16} color="black" /><Text style={{ fontSize: 12 }}>Số vé đã đặt: {booking?.bookingDTO?.quantity}</Text></View>
                                 <View style={styles.rowAround}>
                                     <Text style={{ fontSize: 12 }}>{loaiBooking(booking?.bookingDTO?.statusBooking)}</Text>
-                                    <Pressable
-                                        style={styles.buttonHoanThanh}
-                                        onPress={() => { navigation.navigate("Payment", { booking:  booking}); }}
-                                    ><Text style={styles.textDat}>Thanh toán</Text>
-                                    </Pressable>
+                                    {
+                                        booking?.bookingDTO?.statusBooking == "CONFIRMED" && (<Pressable
+                                            style={styles.buttonHoanThanh}
+                                            onPress={() => { navigation.navigate("Payment", { booking: booking }); }}
+                                        ><Text style={styles.textDat}>Thanh toán</Text>
+                                        </Pressable>)
+                                    }
                                 </View>
                             </View>
                         </View>
@@ -111,7 +113,7 @@ const styles = StyleSheet.create({
 
     detailTour: {
         paddingLeft: 5,
-        width:'60%'
+        width: '60%'
     },
     row: {
         display: 'flex',
@@ -133,14 +135,14 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginTop: 5,
         fontWeight: 500,
-        marginBottom:5,
+        marginBottom: 5,
     },
     textDat: {
         textAlign: "center",
         fontSize: 13,
         fontWeight: "500",
-        paddingLeft:10,
-        paddingRight:10,
+        paddingLeft: 10,
+        paddingRight: 10,
 
     },
 

@@ -13,11 +13,6 @@ const Login = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordVisible, setPasswordVisible] = useState(false);
-<<<<<<< HEAD
-
-   
-=======
->>>>>>> cd5d8b82a8dec03d7e24d63775e7fdf33fe53d76
     const togglePasswordVisibility = () => {
         setPasswordVisible(!passwordVisible);
     };
@@ -33,7 +28,7 @@ const Login = ({ navigation }) => {
         navigation.navigate("Register")
     };
     return (
-        <ScrollView style={{ backgroundColor: "#F2F2F2", height: "100%" }}>
+        <ScrollView style={{ backgroundColor: "white", height: "100%" }}>
             <ImageBackground source={{
                 uri: "https://res.cloudinary.com/doqbelkif/image/upload/v1727568395/2340debd-118a-4f21-b7c8-6e7eed853ef8.png"
             }} resizeMode="cover" style={styles.imageBia}>

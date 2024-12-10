@@ -17,6 +17,7 @@ import Login from "../components/LoginComponent/Login"
 import Register from "../components/LoginComponent/Register"
 import Authentic from "../components/LoginComponent/Authentic"
 import Payment from "../components/BookingComponent/component/Payment";
+import PayPal from "../components/BookingComponent/component/PayPal";
 const Stack = createNativeStackNavigator();
 
 export default function RootComponent() {
@@ -47,6 +48,7 @@ export default function RootComponent() {
        <Stack.Screen name="Tour" component={Tour} />
        <Stack.Screen name="SetCriteria" component={SetCriteria} />
        <Stack.Screen name="Payment" component={Payment} />
+       <Stack.Screen name="PayPal" component={PayPal} />
     </Stack.Navigator>
   ) 
 }

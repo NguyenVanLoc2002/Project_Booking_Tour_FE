@@ -19,7 +19,7 @@ const ListTour = ({ navigation, route }) => {
 
     useEffect(() => {
         const fetchTour = async () => {
-            await fetchToursSort("NORTH", currentPage, toursPerPage, sortType);
+            await fetchToursSort("NORTH", currentPage, toursPerPage, sortType)
         };
         fetchTour();
     }, [region, currentPage, toursPerPage, sortType]);
