@@ -3,7 +3,8 @@ import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 const PayPalButton = ({ amount, onSuccess }) => {
     const [paypalReady, setPaypalReady] = useState(false);
-
+    console.log("Amout: ", amount);
+ 
     useEffect(() => {
         // Đảm bảo PayPal script được tải trước khi render button
         const script = document.createElement("script");
