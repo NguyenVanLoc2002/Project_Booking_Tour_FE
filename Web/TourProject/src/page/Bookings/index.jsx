@@ -223,7 +223,7 @@ function Bookings() {
   const getCustomerProcessingBookings = async (userId) => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/v1/booking/redis/customer/${userId}`,
+        `https://travelvietnam.io.vn/api/v1/booking/redis/customer/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -250,7 +250,7 @@ function Bookings() {
   const getCustomerPaidAndCancelledBookings = async (userId) => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/v1/booking?customerId=${userId}`,
+        `https://travelvietnam.io.vn/api/v1/booking?customerId=${userId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

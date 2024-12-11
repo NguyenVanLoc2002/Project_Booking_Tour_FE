@@ -26,7 +26,7 @@ const PaymentPage = () => {
     const fetchBookingTour = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8000/api/v1/booking/redis/${bookingId}`
+          `https://travelvietnam.io.vn/api/v1/booking/redis/${bookingId}`
         );
         setAmount(res.data.bookingDTO.totalAmount);
         setBooking(res.data.bookingDTO);
@@ -54,7 +54,7 @@ const PaymentPage = () => {
     console.log("Transaction ID: ", transactionId);
     try {
       const res = await axios.post(
-        "http://localhost:8000/api/v1/payments/success",
+        "https://travelvietnam.io.vn/api/v1/payments/success",
         {
           paymentId: paymentID,
           payerId: payerID,

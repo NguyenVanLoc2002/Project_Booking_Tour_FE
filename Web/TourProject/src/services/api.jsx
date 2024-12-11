@@ -3,7 +3,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { message } from "antd";
 
-const BASE_URL = "http://localhost:8000/api/v1";
+const BASE_URL = "https://travelvietnam.io.vn/api/v1";
 
 // Hàm đăng nhập
 export const loginApi = async (email, password) => {

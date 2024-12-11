@@ -112,7 +112,7 @@ function Header() {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/v1/customers/addCustomer",
+        "https://travelvietnam.io.vn/api/v1/customers/addCustomer",
         data
       );
       console.log("Đăng ký thành công:", response.data);

@@ -26,7 +26,7 @@ function ChuongTrinh({ tour }) {
       if (tour) {
         try {
           const res = await axios.get(
-            `http://localhost:8000/api/v1/itineraries/by-tour`,
+            `https://travelvietnam.io.vn/api/v1/itineraries/by-tour`,
             {
               params: { tourId: tour.tourId },
             }
@@ -51,7 +51,7 @@ function ChuongTrinh({ tour }) {
       if (tour) {
         try {
           const response = await axios.get(
-            `http://localhost:8000/api/v1/tour-tickets/by-tour/${tour.tourId}`
+            `https://travelvietnam.io.vn/api/v1/tour-tickets/by-tour/${tour.tourId}`
           );
           setTickets(response.data);
         } catch (error) {

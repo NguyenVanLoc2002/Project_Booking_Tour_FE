@@ -112,7 +112,7 @@ const ModalCancelTour = ({ visible, onClose, data }) => {
     try {
       setLoading(true);
       await axios.post(
-        `http://localhost:8000/api/v1/payments/process-refund?bookingId=${bookingId}`, // URL với tham số query
+        `https://travelvietnam.io.vn/api/v1/payments/process-refund?bookingId=${bookingId}`, // URL với tham số query
         {}, // Nếu có dữ liệu cần gửi, bạn có thể truyền vào đây (ở đây không cần dữ liệu trong body)
         {
           headers: {

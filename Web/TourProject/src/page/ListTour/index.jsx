@@ -98,7 +98,7 @@ function ListTour() {
   }, [region]);
 
   const fetchFilteredTours = async (criteria, currentPage, toursPerPage) => {
-    const url = `http://localhost:8000/api/v1/tours/getFilteredTours`;
+    const url = `https://travelvietnam.io.vn/api/v1/tours/getFilteredTours`;
     try {
       const response = await axios.post(url, criteria, {
         params: { page: currentPage, size: toursPerPage },
@@ -119,13 +119,13 @@ function ListTour() {
 
   const fetchTours = async () => {
     try {
-      let url = `http://localhost:8000/api/v1/tours/region`;
+      let url = `https://travelvietnam.io.vn/api/v1/tours/region`;
       const params = {
         page: currentPage,
         size: toursPerPage,
       };
       if (name) {
-        url = `http://localhost:8000/api/v1/tours/by-name`;
+        url = `https://travelvietnam.io.vn/api/v1/tours/by-name`;
         params.name = name;
       } else if (criteria) {
         const result = await fetchFilteredTours(
@@ -146,24 +146,24 @@ function ListTour() {
             break;
 
           case "priceDesc": // Giá cao nhất
-            url = `http://localhost:8000/api/v1/tours/region-order-by-price`;
+            url = `https://travelvietnam.io.vn/api/v1/tours/region-order-by-price`;
             params.isAscending = false;
             break;
 
           case "priceAsc": // Giá thấp nhất
-            url = `http://localhost:8000/api/v1/tours/region-order-by-price`;
+            url = `https://travelvietnam.io.vn/api/v1/tours/region-order-by-price`;
             params.isAscending = true;
             break;
           case "departureDateAsc": // Khởi hành sớm nhất
-            url = `http://localhost:8000/api/v1/tours/region-order-by-departure-date`;
+            url = `https://travelvietnam.io.vn/api/v1/tours/region-order-by-departure-date`;
             params.isAscending = true;
             break;
           case "departureDateDesc": // Khởi hành muộn nhất
-            url = `http://localhost:8000/api/v1/tours/region-order-by-departure-date`;
+            url = `https://travelvietnam.io.vn/api/v1/tours/region-order-by-departure-date`;
             params.isAscending = false;
             break;
           case "typeTour": // Khởi hành muộn nhất
-            url = `http://localhost:8000/api/v1/tours/by-type`;
+            url = `https://travelvietnam.io.vn/api/v1/tours/by-type`;
             params.typeTour = typeTour;
             break;
           default:
