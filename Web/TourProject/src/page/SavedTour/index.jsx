@@ -370,7 +370,7 @@ function SavedTour() {
     );
   };
 
-  const handleNavigateDetailTour = async ( tour) => {
+  const handleNavigateDetailTour = async (tour) => {
     if (user) await handleInteraction(tour.tourId, "VIEW", user, token);
     navigate(`/detail?ticketId=${tour.ticketId}`);
   };
@@ -475,17 +475,6 @@ function SavedTour() {
               />
               <div>Khởi hành muộn nhất</div>
             </div>
-            <div
-              className={"flex flex-row items-center "}
-              onClick={() => showModal()}
-            >
-              <img
-                src={filter}
-                alt="Logo"
-                className="w-[32px]  h-auto m-2 mr-4"
-              />
-              <div>Lọc</div>
-            </div>
             <div className="flex flex-row justify-center pt-6">
               <button
                 className={`w-14 h-14 rounded-lg flex items-center justify-center mr-3 ${
@@ -521,7 +510,7 @@ function SavedTour() {
                 {tourList.map((tour, index) => (
                   <button
                     key={tour.tourId ? tour.tourId : `${index}`}
-                    onClick={() => handleNavigateDetailTour( tour)}
+                    onClick={() => handleNavigateDetailTour(tour)}
                     className="mb-8"
                   >
                     <TourCardList tour={tour} />
@@ -533,7 +522,7 @@ function SavedTour() {
                 {tourList.map((tour, index) => (
                   <button
                     key={tour.tourId ? tour.tourId : `${index}`}
-                    onClick={() => handleNavigateDetailTour( tour)}
+                    onClick={() => handleNavigateDetailTour(tour)}
                     className="mb-8"
                   >
                     <TourCardGrid tour={tour} />
