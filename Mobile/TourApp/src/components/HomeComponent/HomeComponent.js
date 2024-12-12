@@ -9,7 +9,10 @@ import TourComponent from "./component/TourComponent"
 // const Tab = createMaterialTopTabNavigator();
 import useTour from "../../hooks/useTour";
 import axiosInstance from "../../api/axiosInstance";
+import { useAuthContext } from "../../contexts/AuthContext";
 const HomeComponent = ({ navigation }) => {
+    const { authUser } = useAuthContext();
+
     const { centralTours, northernTours, southernTours, fetchToursByRegion } = useTour();
     const [centralTourList, setCentralTourList] = useState([]);
     const [northernTourList, setNorthernTourList] = useState([])
@@ -17,21 +20,7 @@ const HomeComponent = ({ navigation }) => {
     const [recommendTour, setRecommendTour] = useState([]);
 
     const [i, seti] = useState(false);
-    const [authUser, setAuthUser] = useState(null); // Lưu thông tin người dùng
-    useEffect(() => {
-        const fetchUserInfo = async () => {
-            try {
-                const response = await axiosInstance.get("/customers/by-email");
-                console.log(response.data)
-                setAuthUser(response.data);
-                return response.data;
 
-            } catch (error) {
-                throw new Error("Failed to fetch user info");
-            }
-        };
-        fetchUserInfo();
-    }, []);
     useEffect(() => {
         const fetchRecommendation = async () => {
 
@@ -256,33 +245,27 @@ const HomeComponent = ({ navigation }) => {
                     ))}
                 </ScrollView>
             </View>
-            <View style={styles.banner}>
-                <View style={styles.mucContainer}>
-                    <View style={[styles.mucContent, { borderBottomWidth: choosedMuc == 0 ? 4 : 0 }]}>
-                        <Pressable style={[styles.buttonMuc, { backgroundColor: choosedMuc == 0 ? "#3FD0D4" : "#fff" }]} onPress={clickDeXuat}>
-                            <Text style={styles.textMuc}>Đề xuất</Text>
-                        </Pressable>
+            {
+                recommendTour == [] && (
+                    <View>
+                        <View style={styles.banner}>
+                            <View style={styles.mucContainer}>
+                                <View style={[styles.mucContent, { borderBottomWidth: choosedMuc == 0 ? 4 : 0 }]}>
+                                    <Pressable style={[styles.buttonMuc, { backgroundColor: choosedMuc == 0 ? "#3FD0D4" : "#fff" }]} onPress={clickDeXuat}>
+                                        <Text style={styles.textMuc}>Đề xuất dành cho bạn</Text>
+                                    </Pressable>
+                                </View>
+                            </View>
+                        </View>
+                        <Pressable onPress={() => { navigation.navigate("ListTour", { listTour: recommendTour, title: "TOUR GỢI Ý CHO BẠN", region: "RECOMMEND", authUser: authUser }); }}><Text style={styles.xemTatCaOption}>Xem tất cả</Text></Pressable>
 
                     </View>
-
-                    <View style={[styles.mucContent, { borderBottomWidth: choosedMuc == 0 ? 0 : 4 }]}>
-                        <Pressable style={[styles.buttonMuc, { backgroundColor: choosedMuc == 1 ? "#3FD0D4" : "#fff" }]} onPress={clickDanhChoBan}>
-                            <Text style={styles.textMuc}>Dành cho bạn</Text>
-                        </Pressable>
-                    </View>
-
-                </View>
-            </View>
-            <Pressable onPress={() => { navigation.navigate("ListTour", { listTour: recommendTour, title: "TOUR GỢI Ý CHO BẠN", region: "RECOMMEND", authUser: authUser }); }}><Text style={styles.xemTatCaOption}>Xem tất cả</Text></Pressable>
-            <TourComponent listTour={recommendTour} navigation={navigation} />
-            {/* <View style={styles.banner}>
-                <View style={styles.rowBetween}>
-                    <Text style={styles.tieuDe}>Ưu đãi tour giờ chót</Text>
-                    <Pressable onPress={() => { navigation.navigate("ListTour", { listTour: northernTourList, title: "TOUR GIỜ CHÓT", region: "NORTH" }); }}><Text style={styles.xemTatCa}>Xem tất cả</Text></Pressable>
-                </View>
-
-                <TourComponent listTour={recommendTour} navigation={navigation} /> 
-            </View> */}
+                )
+            }
+            {
+                recommendTour && (
+                    <TourComponent listTour={recommendTour} navigation={navigation} />
+                )}
 
             <View style={styles.banner}>
                 <Text style={styles.tieuDe}>Điểm đến được yêu thích</Text>
@@ -456,7 +439,7 @@ const styles = StyleSheet.create({
         height: 40,
         // backgroundColor:"#bbb",
         justifyContent: "center",
-        width: 150,
+        width: 400,
         alignItems: "center",
         borderRadius: 20
     },
@@ -466,7 +449,7 @@ const styles = StyleSheet.create({
         fontWeight: "500"
     },
     mucContent: {
-        width: "45%",
+        width: "80%",
         justifyContent: 'center',
         alignItems: "center",
         borderBottomColor: "#3FD0D4",

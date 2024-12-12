@@ -11,7 +11,7 @@ axiosInstance.interceptors.request.use(
   async (config) => {
     try {
       // Chỉ thêm token nếu không phải endpoint đăng nhập
-      if (!config.url.includes("/auth/login")) {
+      if (!config.url.includes("/auth/login") && !config.url.includes("/customers/addCustomer")) {
         const token = await AsyncStorage.getItem("accessToken");
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;

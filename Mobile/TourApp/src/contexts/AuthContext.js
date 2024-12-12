@@ -9,7 +9,8 @@ export const useAuthContext = () => {
 
 // AsyncStorage.clear();
 export const AuthContextProvider = ({ children }) => {
-    const [authUser, setAuthUser] = useState("hihi"); 
+    const [authUser, setAuthUser] = useState(); 
+
     useEffect(() => {
         const loadData = async () => {
         

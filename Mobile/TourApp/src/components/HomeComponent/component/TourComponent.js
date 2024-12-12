@@ -3,9 +3,13 @@ import { View, Text, StyleSheet, Pressable, Image, ScrollView } from 'react-nati
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Ionicons from '@expo/vector-icons/Ionicons';
-
+import axiosInstance from "../../../api/axiosInstance";
+import { useAuthContext } from "../../../contexts/AuthContext";
+import dayjs from "dayjs";
+import Toast from "react-native-toast-message";
 const TourComponent = ({ navigation, route, listTour }) => {
-    // const [tourList, setTourList] = useState(listTour);
+    const { authUser } = useAuthContext();
+
     const formatDate = (inputDate) => {
         let date;
 
@@ -28,6 +32,39 @@ const TourComponent = ({ navigation, route, listTour }) => {
 
         return `${day}/${month}/${year}`;
     };
+    const handleInteraction = async (tourId, interactionType) => {
+        const interaction = {
+            cusId: authUser.userId,
+            tourId: tourId,
+            interactionType: interactionType,
+            interactionDate: dayjs().format("YYYY-MM-DD"),
+        };
+        try {
+            const response = await axiosInstance.post(
+                `/recommendation/customer-interaction/interactions`,
+                interaction,
+            );
+            if (interactionType == "SAVED") {
+                Toast.show({
+                    type: "success",
+                    text1: "Lưu tour thành công",
+                    text2: `Interaction ${interactionType} saved successfully`,
+                    position: "bottom",
+                    visibilityTime: 4000,
+                    autoHide: true,
+                });
+            }
+            console.log(`Interaction ${interactionType} saved successfully`);
+        } catch (error) {
+            console.error(`Failed to save interaction ${interactionType}:`, error);
+        }
+    };
+    const handleNavigateDetail = async (tour) => {
+
+        await handleInteraction(tour.tourId, "VIEW");
+        navigation.navigate("DetailTour", { tour: tour });
+    };
+
     return (
 
         <ScrollView horizontal style={styles.tourContainer}>
@@ -35,16 +72,24 @@ const TourComponent = ({ navigation, route, listTour }) => {
                 <View key={index} style={styles.tourRow}>
                     <Pressable
                         style={styles.itemTour}
-                        onPress={() => { navigation.navigate("DetailTour", { tour: tour }); }}
+                        onPress={() => { handleNavigateDetail(tour) }}
                     >
                         <View style={styles.tour}>
-                            <Image
-                                source={{
-                                    uri: tour?.urlImage[0] || 'https://i.pinimg.com/474x/c4/a0/8a/c4a08aa606e7f447dce470177e14be56.jpg'
-                                }}
-                                style={styles.tourAvt}
-                                resizeMode="cover"
-                            />
+                            <View style={styles.imageContainer}>
+                                <Image
+                                    source={{
+                                        uri: tour?.urlImage[0] || 'https://i.pinimg.com/474x/c4/a0/8a/c4a08aa606e7f447dce470177e14be56.jpg'
+                                    }}
+                                    style={styles.tourAvt}
+                                    resizeMode="cover"
+                                />
+                                <Pressable
+                                    style={styles.favoriteButton}
+                                    onPress={() => handleInteraction(tour.tourId, "SAVED")}
+                                >
+                                    <AntDesign name="hearto" size={20} color="red" />
+                                </Pressable>
+                            </View>
                             <View style={styles.detailTour}>
                                 <Text style={{ fontSize: 14, fontWeight: "500" }}>{tour.name}</Text>
                                 <View style={styles.rowAround}>
@@ -113,12 +158,24 @@ const styles = StyleSheet.create({
     tour: {
         flexDirection: "col",
     },
+    imageContainer: {
+        position: "relative",
+    },
+
     tourAvt: {
         width: '100%',
         height: 140,
         backgroundColor: "red",
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
+    },
+    favoriteButton: {
+        position: "absolute",
+        top: 10,
+        right: 10,
+        backgroundColor: "rgba(255, 255, 255, 0.8)",
+        padding: 5,
+        borderRadius: 50,
     },
     detailTour: {
         paddingLeft: 5

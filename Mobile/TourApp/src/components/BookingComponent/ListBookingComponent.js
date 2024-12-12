@@ -28,15 +28,14 @@ const BookingComponent = ({ navigation, route }) => {
             const confirmed = response.data.filter(
                 (item) => item.bookingDTO.statusBooking === "CONFIRMED"
             );
-            console.log(confirmed);
             // Lưu trữ các loại booking
             setPendingBookings(pendingBookings);
             setConfirmedBookings(confirmed);
-            if (selectTrangThai == 1) {
-                setListBooking(pendingBookings);
-            } else if (selectTrangThai == 2) {
-                setListBooking(confirmed)
-            }
+            // if (selectTrangThai == 1) {
+            //     setListBooking(pendingBookings);
+            // } else if (selectTrangThai == 2) {
+            //     setListBooking(confirmed)
+            // }
 
         } catch (error) {
             console.error("Error fetching customer processing bookings:", error);
@@ -55,11 +54,11 @@ const BookingComponent = ({ navigation, route }) => {
             const refundedBookings = response.data.filter(
                 (item) => item.bookingDTO.statusBooking === "REFUNDED"
             );
-            if (selectTrangThai == 3) {
-                setListBooking(paidBookings);
-            } else if (selectTrangThai == 4) {
-                setListBooking(refundedBookings)
-            }
+            // if (selectTrangThai == 3) {
+            //     setListBooking(paidBookings);
+            // } else if (selectTrangThai == 4) {
+            //     setListBooking(refundedBookings)
+            // }
             // Lưu trữ các loại booking
             setPaidBookings(paidBookings);
             setRefundedBookings(refundedBookings);
@@ -69,11 +68,16 @@ const BookingComponent = ({ navigation, route }) => {
     };
     useEffect(() => {
         if (authUser?.userId) {
+            getCustomerProcessingBookings(authUser.userId);
+            getCustomerPaidAndCancelledBookings(authUser.userId);
+        }
+    }, []);
+    useEffect(() => {
+        if (authUser?.userId) {
             if (selectTrangThai == 1 || selectTrangThai == 2) {
                 getCustomerProcessingBookings(authUser.userId);
             }
             else {
-                Ơ
                 getCustomerPaidAndCancelledBookings(authUser.userId);
             }
         }
@@ -85,7 +89,6 @@ const BookingComponent = ({ navigation, route }) => {
 
     const [selectTrangThai, setSelectTrangThai] = useState(1);
     const setTrangThai = (loai) => {
-        console.log(pendingBookings);
         setSelectTrangThai(loai);
         if (loai == 1)
             setListBooking(pendingBookings);
@@ -164,7 +167,23 @@ const BookingComponent = ({ navigation, route }) => {
                     <Text style={styles.tieuDe}>{loaiBooking(selectTrangThai)}</Text>
                     <TouchableOpacity onPress={() => reload()}><Ionicons name="reload" size={24} color="black" /></TouchableOpacity>
                 </View>
-                <ListBooking listBooking={listBooking} navigation={navigation} />
+                {
+                    selectTrangThai == 1 ? (
+                        <ListBooking listBooking={pendingBookings} navigation={navigation} />
+                    ) : (
+
+                        selectTrangThai == 2 ? (
+                            <ListBooking listBooking={confirmedBookings} navigation={navigation} />
+                        ) :
+                            (selectTrangThai == 3 ? (
+                                <ListBooking listBooking={paidBookings} navigation={navigation} />
+                            ) :
+                                (
+                                    <ListBooking listBooking={refundedBookings} navigation={navigation} />
+                                )
+                            )
+                    )
+                }
                 {/* {
                     if (loai == 1)
                         <ListBooking listBooking={pendingBookings} navigation={navigation} />

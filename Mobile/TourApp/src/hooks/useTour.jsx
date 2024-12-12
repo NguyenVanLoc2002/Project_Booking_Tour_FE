@@ -11,7 +11,7 @@ const useGroup = () => {
   const [totalPagesNorth, setTotalPagesNorth] = useState(1);
   const [totalPagesCentral, setTotalPagesCentral] = useState(1);
   const [totalPagesSouth, setTotalPagesSouth] = useState(1);
-
+  const [saveTour, setSaveTour] = useState([]);
   //Call API Tour by Region
   const fetchToursByRegion = async (region) => {
     try {
@@ -99,33 +99,6 @@ const useGroup = () => {
           isAscending: true,
         };
 
-        // switch (sortType) {
-        //   case "startDateNew": // Mới nhất
-        //     params.isAscending = false; // Ngày giảm dần
-        //     break;
-
-        //   case "priceDesc": // Giá cao nhất
-        //     url = `/tours/region-order-by-price`;
-        //     params.isAscending = false;
-        //     break;
-
-        //   case "priceAsc": // Giá thấp nhất
-        //     url = `/tours/region-order-by-price`;
-        //     params.isAscending = true;
-        //     break;
-        //   case "departureDateAsc": // Khởi hành sớm nhất
-        //     url = `/tours/region-order-by-departure-date`;
-        //     params.isAscending = true;
-        //     break;
-        //   case "departureDateDesc": // Khởi hành muộn nhất
-        //     url = `/tours/region-order-by-departure-date`;
-        //     params.isAscending = false;
-        //     break;
-        //   default:
-        //     // Nếu không có sortType, giữ nguyên URL và params mặc định
-        //     break;
-        // }
-
         const response = await axiosInstance.get(url, { params });
 
         setTourListSort(setSortType(response.data.content, sortType)); // Lưu danh sách tour
@@ -134,6 +107,42 @@ const useGroup = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+  const saveTourSort = async ( currentPage, toursPerPage, sortType, authUser) => {
+
+    try {
+        const url = `/recommendation/customer-interaction/saved/${authUser.userId}`;
+        const savedTourResponse = await axiosInstance.get(url);
+        const savedTourData = savedTourResponse.data; 
+        const totalPages = Math.ceil(savedTourData.length / toursPerPage);
+        // Lưu danh sách tour
+        setTotalPages(totalPages);
+        const paginatedData = paginateData(
+          savedTourData,
+          currentPage,
+          toursPerPage
+        );
+        const tourPromises = paginatedData.map(async (interaction) => {
+          const response = await axiosInstance.get(
+            `/tours/getById?ticketId=${interaction.tourId}`
+          );
+          return { ...response.data, interactionId: interaction.interactionId };
+        });
+  
+        // Đợi tất cả các tour chi tiết
+        const toursData = await Promise.all(tourPromises);
+        console.log('tourdata',toursData)
+        const savedTour = setSortType(toursData, sortType) ; 
+        setSaveTour(savedTour);
+      
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const paginateData = (data, page, perPage) => {
+    const start = (page - 1) * perPage;
+    const end = start + perPage;
+    return data.slice(start, end);
   };
 
   return {
@@ -146,7 +155,9 @@ const useGroup = () => {
     totalPages,
     totalPagesSouth,
     totalPagesCentral,
-    totalPagesNorth
+    totalPagesNorth,
+    saveTour,
+    saveTourSort
   };
 };
 
