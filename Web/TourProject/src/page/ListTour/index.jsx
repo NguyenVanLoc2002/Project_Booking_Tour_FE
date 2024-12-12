@@ -32,6 +32,7 @@ import jungle from "../../assets/iconTour/jungle.png";
 import bannerMB from "../../assets/banner/banner_MB.jpg";
 import bannerMT from "../../assets/banner/banner_MT.jpg";
 import bannerMN from "../../assets/banner/banner_MN.jpg";
+import bannerPopuplar from "../../assets/banner/bn.jpg";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import ModalSetCriteria from "../../components/ModalSetCriteria";
@@ -59,13 +60,10 @@ function ListTour() {
   const [toursPerPage, setToursPerPage] = useState(12);
   const [tourList, setTourList] = useState([]); // Danh sách tour
   const [totalPages, setTotalPages] = useState(1); // Tổng số trang
-  const [sortType, setSortType] = useState("");
-  const [typeTour, settypeTour] = useState("");
+  const [filterType, setFilterType] = useState("");
+  const [typeTour, setTypeTour] = useState("");
   const { tours } = location.state || {};
-  console.log("Matching: ", tourList);
-
-
-  
+  console.log("Matching: ", tourList.length);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const showModal = () => {
@@ -88,17 +86,23 @@ function ListTour() {
         "Du Lịch Miền Trung – Nơi Giao Thoa Giữa Văn Hóa Lịch Sử, Biển Cả và Món Ngon Truyền Thống"
       );
       setRegionTour("MIỀN TRUNG");
-    } else {
+    } else if (region === "SOUTH"){
       setUrlImageBanner(bannerMN);
       setTitle(
         "Hành Trình Miền Nam – Từ Sài Gòn Sầm Uất Đến Những Cảnh Đẹp Hoang Sơ và Ẩm Thực Đặc Sắc"
       );
       setRegionTour("MIỀN NAM");
+    }else{
+      setUrlImageBanner(bannerPopuplar);
+      setTitle(
+        "Du Lịch "
+      );
+      setRegionTour("TOUR");
     }
   }, [region]);
 
   const fetchFilteredTours = async (criteria, currentPage, toursPerPage) => {
-    const url = `http://localhost:8000/api/v1/tours/getFilteredTours`;
+    const url = `https://travelvietnam.io.vn/api/v1/tours/getFilteredTours`;
     try {
       const response = await axios.post(url, criteria, {
         params: { page: currentPage, size: toursPerPage },
@@ -119,13 +123,13 @@ function ListTour() {
 
   const fetchTours = async () => {
     try {
-      let url = `http://localhost:8000/api/v1/tours/region`;
+      let url = `https://travelvietnam.io.vn/api/v1/tours/region`;
       const params = {
         page: currentPage,
         size: toursPerPage,
       };
       if (name) {
-        url = `http://localhost:8000/api/v1/tours/by-name`;
+        url = `https://travelvietnam.io.vn/api/v1/tours/by-name`;
         params.name = name;
       } else if (criteria) {
         const result = await fetchFilteredTours(
@@ -140,30 +144,30 @@ function ListTour() {
       } else {
         params.region = region;
 
-        switch (sortType) {
+        switch (filterType) {
           case "startDateNew": // Mới nhất
             params.isAscending = false; // Ngày giảm dần
             break;
 
           case "priceDesc": // Giá cao nhất
-            url = `http://localhost:8000/api/v1/tours/region-order-by-price`;
+            url = `https://travelvietnam.io.vn/api/v1/tours/region-order-by-price`;
             params.isAscending = false;
             break;
 
           case "priceAsc": // Giá thấp nhất
-            url = `http://localhost:8000/api/v1/tours/region-order-by-price`;
+            url = `https://travelvietnam.io.vn/api/v1/tours/region-order-by-price`;
             params.isAscending = true;
             break;
           case "departureDateAsc": // Khởi hành sớm nhất
-            url = `http://localhost:8000/api/v1/tours/region-order-by-departure-date`;
+            url = `https://travelvietnam.io.vn/api/v1/tours/region-order-by-departure-date`;
             params.isAscending = true;
             break;
           case "departureDateDesc": // Khởi hành muộn nhất
-            url = `http://localhost:8000/api/v1/tours/region-order-by-departure-date`;
+            url = `https://travelvietnam.io.vn/api/v1/tours/region-order-by-departure-date`;
             params.isAscending = false;
             break;
           case "typeTour": // Khởi hành muộn nhất
-            url = `http://localhost:8000/api/v1/tours/by-type`;
+            url = `https://travelvietnam.io.vn/api/v1/tours/by-type`;
             params.typeTour = typeTour;
             break;
           default:
@@ -185,17 +189,58 @@ function ListTour() {
     }
   };
 
+  const filterToursByType = (selectedTypeTour) => {
+    console.log("RUN: ", selectedTypeTour);
+    setTourList(tours);
+    const filteredTours = tourList.filter(
+      (tour) => tour.tourFeatureDTO.typeTour === selectedTypeTour
+    );
+    if (filteredTours.length <= 0) {
+      message.error("Không tìm thấy tour phù hợp!");
+      return;
+    }
+    setTourList(filteredTours);
+  };
+
+  const sortToursByStartDate = () => {
+    const sortedList = [...tourList].sort((a, b) => {
+      const dateA = new Date(a.tourFeatureDTO.startDate);
+      const dateB = new Date(b.tourFeatureDTO.startDate);
+      return dateB - dateA;
+    });
+    setTourList(sortedList); // Cập nhật state với danh sách đã sắp xếp
+  };
+
+  const sortToursByDepartureDate = (isAscending) => {
+    const sortedList = [...tourList].sort((a, b) => {
+      const dateA = new Date(a.departureDate);
+      const dateB = new Date(b.departureDate);
+      if (isAscending === "True") return dateB - dateA;
+      else return dateA - dateB;
+    });
+    setTourList(sortedList); // Cập nhật state với danh sách đã sắp xếp
+  };
+
+  const sortToursByPrice = (isAscending) => {
+    const sortedList = [...tourList].sort((a, b) => {
+      const dateA = new Date(a.price);
+      const dateB = new Date(b.price);
+      if (isAscending === "True") return dateB - dateA;
+      else return dateA - dateB;
+    });
+    setTourList(sortedList); // Cập nhật state với danh sách đã sắp xếp
+  };
+
   useEffect(() => {
     setCriteria(null);
-  },[region, name]);
-  
+  }, [region, name]);
+
   useEffect(() => {
-   
     fetchTours();
-    if (tours) {
+    if (tours && !typeTour) {
       setTourList(tours);
     }
-  }, [name, region, currentPage, toursPerPage, sortType, typeTour, criteria]);
+  }, [name, region, currentPage, toursPerPage, filterType, typeTour, criteria]);
 
   //Animation text
   useEffect(() => {
@@ -322,6 +367,8 @@ function ListTour() {
     return pageArr;
   };
 
+  console.log("Tour list:", tourList);
+
   return (
     <>
       <div className="w-full h-full flex flex-col">
@@ -343,8 +390,13 @@ function ListTour() {
           <div className={"flex flex-col items-center justify-around"}>
             <button
               onClick={() => {
-                settypeTour("SPORT");
-                setSortType("typeTour");
+                const newTypeTour = "SPORT";
+                setTypeTour(newTypeTour);
+                if (tours && tours.length > 0) {
+                  filterToursByType(newTypeTour);
+                } else {
+                  setFilterType("typeTour");
+                }
               }}
               className="flex flex-col items-center cursor-pointer bg-transparent border-none"
             >
@@ -356,8 +408,13 @@ function ListTour() {
           <div className={"flex flex-col items-center justify-center"}>
             <button
               onClick={() => {
-                settypeTour("DISCOVER");
-                setSortType("typeTour");
+                const newTypeTour = "DISCOVER";
+                setTypeTour(newTypeTour);
+                if (tours && tours.length > 0) {
+                  filterToursByType(newTypeTour);
+                } else {
+                  setFilterType("typeTour");
+                }
               }}
               className="flex flex-col items-center cursor-pointer bg-transparent border-none"
             >
@@ -369,8 +426,13 @@ function ListTour() {
           <div className={"flex flex-col items-center justify-center"}>
             <button
               onClick={() => {
-                settypeTour("CULTURE");
-                setSortType("typeTour");
+                const newTypeTour = "CULTURE";
+                setTypeTour(newTypeTour);
+                if (tours && tours.length > 0) {
+                  filterToursByType(newTypeTour);
+                } else {
+                  setFilterType("typeTour");
+                }
               }}
               className="flex flex-col items-center cursor-pointer bg-transparent border-none"
             >
@@ -382,8 +444,13 @@ function ListTour() {
           <div className={"flex flex-col items-center justify-center"}>
             <button
               onClick={() => {
-                settypeTour("ECOLOGY");
-                setSortType("typeTour");
+                const newTypeTour = "ECOLOGY";
+                setTypeTour(newTypeTour);
+                if (tours && tours.length > 0) {
+                  filterToursByType(newTypeTour);
+                } else {
+                  setFilterType("typeTour");
+                }
               }}
               className="flex flex-col items-center cursor-pointer bg-transparent border-none"
             >
@@ -395,8 +462,13 @@ function ListTour() {
           <div className={"flex flex-col items-center justify-center"}>
             <button
               onClick={() => {
-                settypeTour("RESORT");
-                setSortType("typeTour");
+                const newTypeTour = "RESORT";
+                setTypeTour(newTypeTour);
+                if (tours && tours.length > 0) {
+                  filterToursByType(newTypeTour);
+                } else {
+                  setFilterType("typeTour");
+                }
               }}
               className="flex flex-col items-center cursor-pointer bg-transparent border-none"
             >
@@ -408,8 +480,13 @@ function ListTour() {
           <div className={"flex flex-col items-center justify-center"}>
             <button
               onClick={() => {
-                settypeTour("ENTERTAINMENT");
-                setSortType("typeTour");
+                const newTypeTour = "ENTERTAINMENT";
+                setTypeTour(newTypeTour);
+                if (tours && tours.length > 0) {
+                  filterToursByType(newTypeTour);
+                } else {
+                  setFilterType("typeTour");
+                }
               }}
               className="flex flex-col items-center cursor-pointer bg-transparent border-none"
             >
@@ -425,7 +502,13 @@ function ListTour() {
             className={
               "flex flex-col items-center justify-center cursor-pointer bg-transparent border-none"
             }
-            onClick={() => setSortType("startDateNew")}
+            onClick={() => {
+              if (tours && tours.length > 0) {
+                sortToursByStartDate();
+              } else {
+                setFilterType("startDateNew");
+              }
+            }}
           >
             <img src={news} alt="Logo" className="w-[32px] h-auto" />
             <div>Mới nhất</div>
@@ -435,7 +518,13 @@ function ListTour() {
             className={
               "flex flex-col items-center justify-center cursor-pointer bg-transparent border-none"
             }
-            onClick={() => setSortType("priceDesc")}
+            onClick={() => {
+              if (tours && tours.length > 0) {
+                sortToursByPrice("True");
+              } else {
+                setFilterType("priceDesc");
+              }
+            }}
           >
             <img src={arrows_bot} alt="Logo" className="w-[32px] h-auto" />
             <div>Giá cao nhất</div>
@@ -445,7 +534,13 @@ function ListTour() {
             className={
               "flex flex-col items-center justify-center cursor-pointer bg-transparent border-none"
             }
-            onClick={() => setSortType("priceAsc")}
+            onClick={() => {
+              if (tours && tours.length > 0) {
+                sortToursByPrice("False");
+              } else {
+                setFilterType("priceAsc");
+              }
+            }}
           >
             <img src={arrows_top} alt="Logo" className="w-[32px] h-auto" />
             <div>Giá thấp nhất</div>
@@ -455,7 +550,14 @@ function ListTour() {
             className={
               "flex flex-col items-center justify-center cursor-pointer bg-transparent border-none"
             }
-            onClick={() => setSortType("departureDateAsc")}
+            onClick={() => {
+              if (tours && tours.length > 0) {
+                console.log("TTT");
+                sortToursByDepartureDate("True");
+              } else {
+                setFilterType("departureDateAsc");
+              }
+            }}
           >
             <img src={early} alt="Logo" className="w-[32px] h-auto" />
             <div>Khởi hành sớm nhất</div>
@@ -465,7 +567,14 @@ function ListTour() {
             className={
               "flex flex-col items-center justify-center cursor-pointer bg-transparent border-none"
             }
-            onClick={() => setSortType("departureDateDesc")}
+            onClick={() => {
+              if (tours && tours.length > 0) {
+                console.log("TTT");
+                sortToursByDepartureDate("False");
+              } else {
+                setFilterType("departureDateDesc");
+              }
+            }}
           >
             <img src={history} alt="Logo" className="w-[32px] h-auto" />
             <div>Khởi hành muộn nhất</div>

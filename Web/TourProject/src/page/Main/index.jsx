@@ -156,7 +156,7 @@ function MainLayout() {
         return;
       }
 
-      const url = `http://localhost:8000/api/v1/recommendation/${user.userId}?page=1&size=10`;
+      const url = `https://travelvietnam.io.vn/api/v1/recommendation/${user.userId}?page=1&size=48`;
 
       try {
         const response = await axios.get(url, {
@@ -170,7 +170,18 @@ function MainLayout() {
           setRecommendTour([]);
           console.info("No recommendations found for this user");
         } else {
-          setRecommendTour(response.data.content);
+          // Lọc các tour trùng tên
+          const uniqueTours = [];
+          const seenNames = new Set();
+
+          response.data.content.forEach((tour) => {
+            if (!seenNames.has(tour.name)) {
+              seenNames.add(tour.name);
+              uniqueTours.push(tour);
+            }
+          });
+
+          setRecommendTour(uniqueTours);
         }
       } catch (error) {
         console.error("Failed to fetch recommendation:", error);
@@ -194,7 +205,7 @@ function MainLayout() {
   const fetchToursByRegion = async (region) => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/v1/tours/region`,
+        `https://travelvietnam.io.vn/api/v1/tours/region`,
         {
           params: { region, page: 1, size: 3, isAscending },
         }

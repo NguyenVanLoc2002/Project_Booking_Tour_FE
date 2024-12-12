@@ -131,7 +131,7 @@ function Booking() {
   const bookTour = async (bookingData) => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/v1/booking/bookTour",
+        "https://travelvietnam.io.vn/api/v1/booking/bookTour",
         bookingData,
         {
           headers: {

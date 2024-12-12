@@ -28,7 +28,7 @@ const ChatBot = () => {
       setInputMessage("");
       try {
         const response = await fetch(
-          "http://localhost:5005/webhooks/rest/webhook",
+          "https://travelvietnam.io.vn/webhooks/rest/webhook",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
