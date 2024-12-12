@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Pressable, StyleSheet, ScrollView } from "react-native";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-const AccountDetail = ({ navigation, route }) => {
-    const { user } = route.params
+import { useAuthContext } from "../../../contexts/AuthContext";
 
+const AccountDetail = ({ navigation, route }) => {
+    const { authUser, fetchUserInfo } = useAuthContext();
+    console.log(authUser?.gender)
     return (
 
         <ScrollView style={{ backgroundColor: "#fafafa", height: "100%" }}>
@@ -13,22 +15,22 @@ const AccountDetail = ({ navigation, route }) => {
             <View style={styles.viewBox}>
                 <View style={styles.rowBe}>
                     <Text style={styles.textTieuDe}>Dữ liệu cá nhân</Text>
-                    <Pressable onPress={() => { navigation.navigate("FormEditPassenger", { passenger: user }); }}><Text style={styles.textButton}>THAY ĐỔI</Text></Pressable></View>
+                    <Pressable onPress={() => { navigation.navigate("FormEditPassenger"); }}><Text style={styles.textButton}>THAY ĐỔI</Text></Pressable></View>
                 <Pressable style={styles.box}>
                     <Text style={styles.textTitle}>Họ tên</Text>
-                    <Text style={styles.textSelect}>{user?.name}</Text>
+                    <Text style={styles.textSelect}>{authUser?.name}</Text>
                 </Pressable>
                 <Pressable style={[styles.box, styles.borderTop]}>
                     <Text style={styles.textTitle}>Giới tính</Text>
-                    <Text style={styles.textSelect}>{user?.gender ? "Chưa có dữ liệu": (user?.gender == false ? "Nữ" : "Nam") }</Text>
+                    <Text style={styles.textSelect}>{ (authUser?.gender == false ? "Nữ" : "Nam")}</Text>
                 </Pressable>
                 <Pressable style={[styles.box, styles.borderTop]}>
                     <Text style={styles.textTitle}>Ngày sinh</Text>
-                    <Text style={styles.textSelect}>{user?.dateOfBirth}</Text>
+                    <Text style={styles.textSelect}>{authUser?.dateOfBirth}</Text>
                 </Pressable>
                 <Pressable style={[styles.boxCol, styles.borderTop]}>
                     <Text style={styles.textTitle}>Thành phố bạn đang ở</Text>
-                    <Text style={styles.textSelect}>{user?.address ?user?.address: "Chưa có dữ liệu"}</Text>
+                    <Text style={styles.textSelect}>{authUser?.address ?authUser?.address: "Chưa có dữ liệu"}</Text>
                 </Pressable>
             </View>
             <View style={styles.viewBox}>
@@ -37,7 +39,7 @@ const AccountDetail = ({ navigation, route }) => {
                     <Pressable><Text style={styles.textButton}>THAY ĐỔI</Text></Pressable></View>
                 <Pressable style={styles.box}>
                     <View>
-                        <Text style={styles.textTitle}>{user?.email}</Text>
+                        <Text style={styles.textTitle}>{authUser?.email}</Text>
                         <Text style={styles.textDetail}>Đây là địa chỉ email dùng để đăng nhập và nhận các thông báo</Text>
                     </View>
                     <Pressable><MaterialCommunityIcons name="dots-horizontal" size={24} color="black" /></Pressable>
@@ -50,7 +52,7 @@ const AccountDetail = ({ navigation, route }) => {
                     <Pressable><Text style={styles.textButton}>THAY ĐỔI</Text></Pressable></View>
                 <Pressable style={styles.box}>
                     <View>
-                        <Text style={styles.textTitle}>{user?.phoneNumber}</Text>
+                        <Text style={styles.textTitle}>{authUser?.phoneNumber}</Text>
                         <Text style={styles.textDetail}>Đây là số điện thoại bạn đã đăng ký với chúng tôi</Text>
                     </View>
                    <Pressable><MaterialCommunityIcons name="dots-horizontal" size={24} color="black" /></Pressable>

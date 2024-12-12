@@ -53,7 +53,7 @@ const Login = ({ navigation }) => {
                         <Text style={styles.textTitle}>Mật khẩu<Text style={[styles.textTitle, { color: "red" }]}> *</Text></Text>
                         <View style={styles.row}>
                             <TextInput
-                                style={[styles.formPickerPass, { paddingLeft: 10, width:150 }]}
+                                style={[styles.formPickerPass, { paddingLeft: 10, width:250 }]}
                                 value={password}
                                 onChangeText={(text) => setPassword(text)}
                                 secureTextEntry={!passwordVisible}

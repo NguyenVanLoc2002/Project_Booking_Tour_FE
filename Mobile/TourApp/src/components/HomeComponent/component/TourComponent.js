@@ -5,13 +5,28 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 const TourComponent = ({ navigation, route, listTour }) => {
-    const formatDate = (dateString) => {
+    // const [tourList, setTourList] = useState(listTour);
+    const formatDate = (inputDate) => {
+        let date;
 
-        // Đảm bảo luôn hiển thị 2 chữ số cho ngày và tháng
-        const formattedDay = dateString[2].toString().padStart(2, "0");
-        const formattedMonth = dateString[1].toString().padStart(2, "0");
+        // Kiểm tra loại dữ liệu của inputDate
+        if (Array.isArray(inputDate)) {
+            // Nếu inputDate là mảng [year, month, day]
+            const [year, month, day] = inputDate;
+            date = new Date(year, month - 1, day); // Lưu ý: Tháng trong Date() bắt đầu từ 0
+        } else if (typeof inputDate === 'string') {
+            // Nếu inputDate là chuỗi "YYYY-MM-DD"
+            date = new Date(inputDate);
+        } else {
+            throw new Error('Invalid date format'); // Xử lý trường hợp không hợp lệ
+        }
 
-        return `${formattedDay}/${formattedMonth}/${dateString[0]}`;
+        // Định dạng ngày thành dd/MM/yyyy
+        const day = String(date.getDate()).padStart(2, '0'); // Đảm bảo 2 chữ số
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng +1
+        const year = date.getFullYear();
+
+        return `${day}/${month}/${year}`;
     };
     return (
 
@@ -42,18 +57,18 @@ const TourComponent = ({ navigation, route, listTour }) => {
                                     </View>
                                     <View style={[styles.row, { paddingRight: 10, alignItems: "center" }]}>
                                         {tour.tourFeatureDTO.transportationMode.includes("AIRPLANE") && (
-                                           <FontAwesome6 style={{ paddingRight: 10 }} name="plane" size={16} color="black" />
+                                            <FontAwesome6 style={{ paddingRight: 10 }} name="plane" size={16} color="black" />
                                         )}
                                         {tour.tourFeatureDTO.transportationMode.includes("BUS") && (
                                             <FontAwesome6 style={{ paddingRight: 10 }} name="bus-simple" size={16} color="black" />
                                         )}
                                         {tour.tourFeatureDTO.transportationMode.includes("TRAIN") && (
-                                          <FontAwesome6 style={{ paddingRight: 10 }} name="train" size={16} color="black" />
+                                            <FontAwesome6 style={{ paddingRight: 10 }} name="train" size={16} color="black" />
                                         )}
                                         {tour.tourFeatureDTO.transportationMode.includes("PRIVATE_CAR") && (
-                                          <FontAwesome6 style={{ paddingRight: 10 }} name="car" size={16} color="black" />
+                                            <FontAwesome6 style={{ paddingRight: 10 }} name="car" size={16} color="black" />
                                         )}
-                                       <Ionicons name="partly-sunny-outline" size={20} color="black" />
+                                        <Ionicons name="partly-sunny-outline" size={20} color="black" />
                                     </View>
                                 </View>
                                 <View style={styles.row}><AntDesign name="calendar" size={16} color="black" /><Text style={{ fontSize: 12 }}>Khởi hành: {formatDate(tour.departureDate)}</Text></View>

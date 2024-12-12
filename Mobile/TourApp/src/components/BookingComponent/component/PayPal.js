@@ -120,7 +120,7 @@ const PayPal = ({ navigation, route }) => {
                             <Text>Chúc mừng bạn thanh toán thành công</Text>
                             <Pressable
                                 style={styles.buttonHoanThanh}
-                                onPress={() => { navigation.navigate("Bookings");}}
+                                onPress={() => { navigation.navigate("Bookings", load="true");}}
                             ><Text style={styles.textDat}>Xác nhận</Text>
                             </Pressable>
                         </View>

@@ -49,6 +49,7 @@ export const AuthContextProvider = ({ children }) => {
             value={{
                 authUser,
                 setAuthUser,
+                fetchUserInfo
             }}
         >
             {children}
@@ -56,4 +57,4 @@ export const AuthContextProvider = ({ children }) => {
     );
 };
 
-// export default AuthContextProvider;
+export default AuthContextProvider;

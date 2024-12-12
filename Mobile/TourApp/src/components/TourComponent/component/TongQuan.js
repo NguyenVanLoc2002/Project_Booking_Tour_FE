@@ -64,10 +64,27 @@ const TongQuan = ({ navigation, route }) => {
         }
 
     }, [itineraries]);
-    const formatDate = (dateString) => {
-        const formattedDay = dateString[2].toString().padStart(2, "0");
-        const formattedMonth = dateString[1].toString().padStart(2, "0");
-        return `${formattedDay}/${formattedMonth}/${dateString[0]}`;
+    const formatDate = (inputDate) => {
+        let date;
+
+        // Kiểm tra loại dữ liệu của inputDate
+        if (Array.isArray(inputDate)) {
+            // Nếu inputDate là mảng [year, month, day]
+            const [year, month, day] = inputDate;
+            date = new Date(year, month - 1, day); // Lưu ý: Tháng trong Date() bắt đầu từ 0
+        } else if (typeof inputDate === 'string') {
+            // Nếu inputDate là chuỗi "YYYY-MM-DD"
+            date = new Date(inputDate);
+        } else {
+            throw new Error('Invalid date format'); // Xử lý trường hợp không hợp lệ
+        }
+
+        // Định dạng ngày thành dd/MM/yyyy
+        const day = String(date.getDate()).padStart(2, '0'); // Đảm bảo 2 chữ số
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng +1
+        const year = date.getFullYear();
+
+        return `${day}/${month}/${year}`;
     };
     const getAccommodationQuality = (accommodation) => {
         let temp;
