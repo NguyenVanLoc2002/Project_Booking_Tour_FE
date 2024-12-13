@@ -220,7 +220,7 @@ const DatTour = ({ navigation, route }) => {
                                 style={styles.actionButton}
                                 onPress={() => {
                                     setIsModalOpen(false);
-                                    navigation.navigate("Bookings");
+                                    navigation.navigate("Bookings", load="true");
                                 }}
 
                             >

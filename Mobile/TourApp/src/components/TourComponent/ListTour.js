@@ -7,19 +7,22 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import useTour from "../../hooks/useTour";
 import Ionicons from '@expo/vector-icons/Ionicons';
 const ListTour = ({ navigation, route }) => {
-    const { listTour, title ,region} = route.params
+    const { listTour, title ,region,authUser} = route.params
     const {totalPages, tourListSort, fetchToursSort } = useTour();
     const [currentPage, setCurrentPage] = useState(1);
     const [toursPerPage, setToursPerPage] = useState(10);
     const [tourList, setTourList] = useState(listTour); // Danh sách tour
     // const [totalPages, setTotalPages] = useState(1); // Tổng số trang
-    const [sortType, setSortType] = useState("");
-
-
+    const [sortType, setSortType]=useState('')
+    const getToursByPage = (page) => {
+        const startIndex = (page - 1) * toursPerPage;
+        const endIndex = startIndex + toursPerPage;
+        return listTour.slice(startIndex, endIndex);
+      };
 
     useEffect(() => {
         const fetchTour = async () => {
-            await fetchToursSort("NORTH", currentPage, toursPerPage, sortType)
+            await fetchToursSort(region, currentPage, toursPerPage, sortType,authUser)
         };
         fetchTour();
     }, [region, currentPage, toursPerPage, sortType]);
@@ -29,7 +32,7 @@ const ListTour = ({ navigation, route }) => {
         // setTotalPages(response.data?.totalPages || 0);
     }, [tourListSort]);
 
-
+    
     //Thực hiện phân trang
     // Hàm chuyển đến trang đầu tiên
     const handleFirstPage = () => {
@@ -64,12 +67,27 @@ const ListTour = ({ navigation, route }) => {
 
         return pageArr;
     };
-    const formatDate = (dateString) => {
+    const formatDate = (inputDate) => {
+        let date;
 
-        // Đảm bảo luôn hiển thị 2 chữ số cho ngày và tháng
-        const formattedDay = dateString[2].toString().padStart(2, "0");
-        const formattedMonth = dateString[1].toString().padStart(2, "0");
-        return `${formattedDay}/${formattedMonth}/${dateString[0]}`;
+        // Kiểm tra loại dữ liệu của inputDate
+        if (Array.isArray(inputDate)) {
+            // Nếu inputDate là mảng [year, month, day]
+            const [year, month, day] = inputDate;
+            date = new Date(year, month - 1, day); // Lưu ý: Tháng trong Date() bắt đầu từ 0
+        } else if (typeof inputDate === 'string') {
+            // Nếu inputDate là chuỗi "YYYY-MM-DD"
+            date = new Date(inputDate);
+        } else {
+            throw new Error('Invalid date format'); // Xử lý trường hợp không hợp lệ
+        }
+
+        // Định dạng ngày thành dd/MM/yyyy
+        const day = String(date.getDate()).padStart(2, '0'); // Đảm bảo 2 chữ số
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng +1
+        const year = date.getFullYear();
+
+        return `${day}/${month}/${year}`;
     };
     return (
         <ScrollView style={{ flex: 1, backgroundColor: "#fafafa", }}>

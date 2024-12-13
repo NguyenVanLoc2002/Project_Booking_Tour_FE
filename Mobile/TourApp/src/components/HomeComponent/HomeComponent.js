@@ -9,46 +9,39 @@ import TourComponent from "./component/TourComponent"
 // const Tab = createMaterialTopTabNavigator();
 import useTour from "../../hooks/useTour";
 import axiosInstance from "../../api/axiosInstance";
+import { useAuthContext } from "../../contexts/AuthContext";
 const HomeComponent = ({ navigation }) => {
+    const { authUser } = useAuthContext();
+
     const { centralTours, northernTours, southernTours, fetchToursByRegion } = useTour();
     const [centralTourList, setCentralTourList] = useState([]);
     const [northernTourList, setNorthernTourList] = useState([])
     const [southernTourList, setSouthernTourList] = useState([])
     const [recommendTour, setRecommendTour] = useState([]);
-    const [recommendTourList, setRecommendTourList] = useState([])
-    const [i, seti] = useState(false);
-    const [authUser, setAuthUser] = useState(null); // Lưu thông tin người dùng
-    useEffect(() => {
-        const fetchUserInfo = async () => {
-            try {
-                const response = await axiosInstance.get("/customers/by-email");
-                console.log(response.data)
-                setAuthUser(response.data);
-                return response.data;
 
-            } catch (error) {
-                throw new Error("Failed to fetch user info");
-            }
-        };
-        fetchUserInfo();
-    }, []);
+    const [i, seti] = useState(false);
+
     useEffect(() => {
         const fetchRecommendation = async () => {
+
             if (!authUser) {
+
                 // setRecommendTour([]); // Nếu user chưa đăng nhập, không gọi API
                 return;
             }
             const url = `/recommendation/${authUser?.userId}?page=1&size=10`;
 
             try {
+                console.log('au', authUser)
                 const response = await axiosInstance.get(url);
-
+                console.log('re', response.data.content)
                 if (response.data.content.length === 0) {
                     // Xử lý khi không có gợi ý
                     // setRecommendTour([]);
                     console.info("No recommendations found for this user");
                 } else {
                     setRecommendTour(response.data.content);
+                    console.log('re', response.data.content);
                     seti(true);
                 }
             } catch (error) {
@@ -90,22 +83,22 @@ const HomeComponent = ({ navigation }) => {
     const [listDiemDenYeuThich, setListDiemDenYeuThich] = useState([
         {
             url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605863/968c81c7-7e7b-447c-962c-7f2c62af98c5.png",
-            local: "Đà Lạt"
+            local: "Phú Quốc"
         },
         {
             url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605834/fb61f333-e383-44d1-b1d6-7727f04c7ad1.png",
-            local: "Hà Nội"
+            local: "Đà Nẵng"
         },
         {
             url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605810/62c96cbc-6b19-4a94-a180-b0d16ac5a9b4.png",
-            local: "Ninh Bình"
+            local: "Nha Trang"
         },
         {
             url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605783/077dc171-f2ed-48e2-a4b4-2c20b5fa4bc7.png",
-            local: "Phú Quốc"
+            local: "Hồ Chí Minh"
         }, {
             url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605866/35784823-5c44-4f7e-b095-ec45a2d129ec.png",
-            local: "Vịnh Hạ Long"
+            local: "Vũng Tàu"
         },
         ,
 
@@ -121,7 +114,7 @@ const HomeComponent = ({ navigation }) => {
 
     // dành cho mục đề xuất & dành cho bạn
     const [choosedMuc, setChoosedMuc] = useState(0);
-    const [choosedMien, setChoosedMien] = useState(1);
+    const [choosedMien, setChoosedMien] = useState(0);
     const [choosedOption, setChoosedOption] = useState(0);
     useEffect(() => {
         const interval = setInterval(() => {
@@ -136,7 +129,7 @@ const HomeComponent = ({ navigation }) => {
                     return newPosition > contentWidth - screenWidth ? 0 : newPosition;
                 });
             }
-        }, 5000); // Cuộn mỗi 3 giây
+        }, 3000); // Cuộn mỗi 3 giây
 
         return () => clearInterval(interval); // Dọn dẹp interval khi component unmount
     }, [scrollPosition, contentWidth, screenWidth]);
@@ -149,6 +142,7 @@ const HomeComponent = ({ navigation }) => {
         console.log('tour', northernTourList);
     };
     const chooseMien = (a) => {
+        console.log('recommend', recommendTour);
         setChoosedMien(a);
     };
     const chooseOption = (a) => {
@@ -251,32 +245,27 @@ const HomeComponent = ({ navigation }) => {
                     ))}
                 </ScrollView>
             </View>
-            <View style={styles.banner}>
-                <View style={styles.mucContainer}>
-                    <View style={[styles.mucContent, { borderBottomWidth: choosedMuc == 0 ? 4 : 0 }]}>
-                        <Pressable style={[styles.buttonMuc, { backgroundColor: choosedMuc == 0 ? "#3FD0D4" : "#fff" }]} onPress={clickDeXuat}>
-                            <Text style={styles.textMuc}>Đề xuất</Text>
-                        </Pressable>
+            {
+                recommendTour == [] && (
+                    <View>
+                        <View style={styles.banner}>
+                            <View style={styles.mucContainer}>
+                                <View style={[styles.mucContent, { borderBottomWidth: choosedMuc == 0 ? 4 : 0 }]}>
+                                    <Pressable style={[styles.buttonMuc, { backgroundColor: choosedMuc == 0 ? "#3FD0D4" : "#fff" }]} onPress={clickDeXuat}>
+                                        <Text style={styles.textMuc}>Đề xuất dành cho bạn</Text>
+                                    </Pressable>
+                                </View>
+                            </View>
+                        </View>
+                        <Pressable onPress={() => { navigation.navigate("ListTour", { listTour: recommendTour, title: "TOUR GỢI Ý CHO BẠN", region: "RECOMMEND", authUser: authUser }); }}><Text style={styles.xemTatCaOption}>Xem tất cả</Text></Pressable>
 
                     </View>
-
-                    <View style={[styles.mucContent, { borderBottomWidth: choosedMuc == 0 ? 0 : 4 }]}>
-                        <Pressable style={[styles.buttonMuc, { backgroundColor: choosedMuc == 1 ? "#3FD0D4" : "#fff" }]} onPress={clickDanhChoBan}>
-                            <Text style={styles.textMuc}>Dành cho bạn</Text>
-                        </Pressable>
-                    </View>
-
-                </View>
-                <TourComponent listTour={recommendTour} navigation={navigation} />
-            </View>
-            {/* <View style={styles.banner}>
-                <View style={styles.rowBetween}>
-                    <Text style={styles.tieuDe}>Ưu đãi tour giờ chót</Text>
-                    <Pressable onPress={() => { navigation.navigate("ListTour", { listTour: northernTourList, title: "TOUR GIỜ CHÓT", region: "NORTH" }); }}><Text style={styles.xemTatCa}>Xem tất cả</Text></Pressable>
-                </View>
-
-                <TourComponent listTour={recommendTour} navigation={navigation} /> 
-            </View> */}
+                )
+            }
+            {
+                recommendTour && (
+                    <TourComponent listTour={recommendTour} navigation={navigation} />
+                )}
 
             <View style={styles.banner}>
                 <Text style={styles.tieuDe}>Điểm đến được yêu thích</Text>
@@ -312,16 +301,16 @@ const HomeComponent = ({ navigation }) => {
                 </View>
 
                 <View style={{ display: choosedMien == 0 ? "block" : "none" }}>
-                    <Pressable onPress={() => { navigation.navigate("ListTour", { listTour: northernTourList, title: "TOUR MIỀN BẮC", region: "NORTH" }); }}><Text style={styles.xemTatCaOption}>Xem tất cả</Text></Pressable>
+                    <Pressable onPress={() => { navigation.navigate("ListTour", { listTour: northernTourList, title: "TOUR MIỀN BẮC", region: "NORTH", authUser: authUser }); }}><Text style={styles.xemTatCaOption}>Xem tất cả</Text></Pressable>
                     <TourComponent listTour={northernTourList} navigation={navigation} />
                 </View>
                 <View style={{ display: choosedMien == 1 ? "block" : "none" }}>
-                    <Pressable onPress={() => { navigation.navigate("ListTour", { listTour: centralTourList, title: "TOUR MIỀN TRUNG", region: "CENTRAL" }); }}><Text style={styles.xemTatCaOption}>Xem tất cả</Text></Pressable>
+                    <Pressable onPress={() => { navigation.navigate("ListTour", { listTour: centralTourList, title: "TOUR MIỀN TRUNG", region: "CENTRAL", authUser: authUser }); }}><Text style={styles.xemTatCaOption}>Xem tất cả</Text></Pressable>
 
                     <TourComponent listTour={centralTourList} navigation={navigation} />
                 </View>
                 <View style={{ display: choosedMien == 2 ? "block" : "none" }}>
-                    <Pressable onPress={() => { navigation.navigate("ListTour", { listTour: southernTourList, title: "TOUR MIỀN NAM", region: "SOUTH" }); }}><Text style={styles.xemTatCaOption}>Xem tất cả</Text></Pressable>
+                    <Pressable onPress={() => { navigation.navigate("ListTour", { listTour: southernTourList, title: "TOUR MIỀN NAM", region: "SOUTH", authUser: authUser }); }}><Text style={styles.xemTatCaOption}>Xem tất cả</Text></Pressable>
                     <TourComponent listTour={southernTourList} navigation={navigation} />
                 </View>
             </View>
@@ -450,7 +439,7 @@ const styles = StyleSheet.create({
         height: 40,
         // backgroundColor:"#bbb",
         justifyContent: "center",
-        width: 150,
+        width: 400,
         alignItems: "center",
         borderRadius: 20
     },
@@ -460,7 +449,7 @@ const styles = StyleSheet.create({
         fontWeight: "500"
     },
     mucContent: {
-        width: "45%",
+        width: "80%",
         justifyContent: 'center',
         alignItems: "center",
         borderBottomColor: "#3FD0D4",

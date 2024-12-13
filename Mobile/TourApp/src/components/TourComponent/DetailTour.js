@@ -13,6 +13,17 @@ const DetailTour = ({ navigation, route }) => {
             </ImageBackground>
 
             <View style={styles.viewBox}>
+                <View style={{display:'flex', marginBottom:-30, zIndex:500, justifyContent:"space-around", flexDirection:"row", paddingLeft:10, paddingRight:10}}  pointerEvents = "none">
+                    <Text style={{ fontSize: 12,  fontWeight: "bold",textTransform: "none", color:"gray"}}>
+                        Tổng Quan
+                    </Text>
+                    <Text style={{ fontSize: 12,  fontWeight: "bold",textTransform: "none", color:"gray"}}>
+                        Chương trình
+                    </Text>
+                    <Text style={{ fontSize: 12,  fontWeight: "bold",textTransform: "none", color:"gray"}}>
+                        Điều kiện
+                    </Text>
+                </View>
                 <TourTabbar navigation={navigation} tour={tour} style={styles.viewBox} />
             </View>
             <View style={styles.priceBox}>
@@ -21,9 +32,9 @@ const DetailTour = ({ navigation, route }) => {
                         <Text style={{ fontSize: 14, paddingLeft: 10, color: "#8C8C8C", fontWeight: "500", textDecorationLine: "line-through" }}>Giá: {tour?.oldPrice}đ</Text>
                         <Text style={{ fontSize: 15, paddingLeft: 10, color: "red", fontWeight: "500" }}>{tour?.price}đ/khách</Text>
                     </View>
-                    <Pressable style={styles.buttonDat} 
+                    <Pressable style={styles.buttonDat}
                     // onPress={() => { navigation.navigate("DatTour", { tour:tour });  }}
-                >
+                    >
                         <Text style={styles.textDat}>ĐẶT NGAY</Text>
                     </Pressable>
                 </View>
@@ -66,7 +77,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         width: "100%",
         // height: "100%"
-        height: '80%'
+        height: '80%',
     },
 
     imageBia: {

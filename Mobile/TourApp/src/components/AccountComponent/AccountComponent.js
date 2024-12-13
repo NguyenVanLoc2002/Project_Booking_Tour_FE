@@ -9,23 +9,10 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Octicons from '@expo/vector-icons/Octicons';
 import authApi from "../../api/authApi";
 import axiosInstance from "./../../api/axiosInstance";
-// import { useAuthContext } from "../../contexts/AuthContext";
+import { useAuthContext } from "../../contexts/AuthContext";
 const AccountComponent = ({ navigation, route }) => {
-    const [authUser, setAuthUser] = useState(null); // Lưu thông tin người dùng
-    useEffect(() => {
-        const fetchUserInfo = async () => {
-            try {
-                const response = await axiosInstance.get("/customers/by-email");
-                console.log(response.data)
-                setAuthUser(response.data);
-                return response.data;
-
-            } catch (error) {
-                throw new Error("Failed to fetch user info");
-            }
-        };
-        fetchUserInfo();
-    }, []);
+    const { authUser } = useAuthContext();
+   
     // gioi tinh 1: nu, 2 nam
     const user = {
         name: 'Bao Truc',
@@ -96,7 +83,7 @@ const AccountComponent = ({ navigation, route }) => {
             <View style={styles.viewBox} >
                 <Text style={styles.textName}>Tài khoản và bảo mật</Text>
                 <Pressable style={styles.box}
-                    onPress={() => { navigation.navigate("AccountDetail", { user: authUser }); }}
+                    onPress={() => { navigation.navigate("AccountDetail"); }}
                 >
                     <AntDesign name="user" size={24} color="black" />
                     <View style={styles.col}>

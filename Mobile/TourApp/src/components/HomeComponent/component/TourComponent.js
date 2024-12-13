@@ -3,16 +3,68 @@ import { View, Text, StyleSheet, Pressable, Image, ScrollView } from 'react-nati
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Ionicons from '@expo/vector-icons/Ionicons';
-
+import axiosInstance from "../../../api/axiosInstance";
+import { useAuthContext } from "../../../contexts/AuthContext";
+import dayjs from "dayjs";
+import Toast from "react-native-toast-message";
 const TourComponent = ({ navigation, route, listTour }) => {
-    const formatDate = (dateString) => {
+    const { authUser } = useAuthContext();
 
-        // Đảm bảo luôn hiển thị 2 chữ số cho ngày và tháng
-        const formattedDay = dateString[2].toString().padStart(2, "0");
-        const formattedMonth = dateString[1].toString().padStart(2, "0");
+    const formatDate = (inputDate) => {
+        let date;
 
-        return `${formattedDay}/${formattedMonth}/${dateString[0]}`;
+        // Kiểm tra loại dữ liệu của inputDate
+        if (Array.isArray(inputDate)) {
+            // Nếu inputDate là mảng [year, month, day]
+            const [year, month, day] = inputDate;
+            date = new Date(year, month - 1, day); // Lưu ý: Tháng trong Date() bắt đầu từ 0
+        } else if (typeof inputDate === 'string') {
+            // Nếu inputDate là chuỗi "YYYY-MM-DD"
+            date = new Date(inputDate);
+        } else {
+            throw new Error('Invalid date format'); // Xử lý trường hợp không hợp lệ
+        }
+
+        // Định dạng ngày thành dd/MM/yyyy
+        const day = String(date.getDate()).padStart(2, '0'); // Đảm bảo 2 chữ số
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng +1
+        const year = date.getFullYear();
+
+        return `${day}/${month}/${year}`;
     };
+    const handleInteraction = async (tourId, interactionType) => {
+        const interaction = {
+            cusId: authUser.userId,
+            tourId: tourId,
+            interactionType: interactionType,
+            interactionDate: dayjs().format("YYYY-MM-DD"),
+        };
+        try {
+            const response = await axiosInstance.post(
+                `/recommendation/customer-interaction/interactions`,
+                interaction,
+            );
+            if (interactionType == "SAVED") {
+                Toast.show({
+                    type: "success",
+                    text1: "Lưu tour thành công",
+                    text2: `Interaction ${interactionType} saved successfully`,
+                    position: "bottom",
+                    visibilityTime: 4000,
+                    autoHide: true,
+                });
+            }
+            console.log(`Interaction ${interactionType} saved successfully`);
+        } catch (error) {
+            console.error(`Failed to save interaction ${interactionType}:`, error);
+        }
+    };
+    const handleNavigateDetail = async (tour) => {
+
+        await handleInteraction(tour.tourId, "VIEW");
+        navigation.navigate("DetailTour", { tour: tour });
+    };
+
     return (
 
         <ScrollView horizontal style={styles.tourContainer}>
@@ -20,16 +72,24 @@ const TourComponent = ({ navigation, route, listTour }) => {
                 <View key={index} style={styles.tourRow}>
                     <Pressable
                         style={styles.itemTour}
-                        onPress={() => { navigation.navigate("DetailTour", { tour: tour }); }}
+                        onPress={() => { handleNavigateDetail(tour) }}
                     >
                         <View style={styles.tour}>
-                            <Image
-                                source={{
-                                    uri: tour?.urlImage[0] || 'https://i.pinimg.com/474x/c4/a0/8a/c4a08aa606e7f447dce470177e14be56.jpg'
-                                }}
-                                style={styles.tourAvt}
-                                resizeMode="cover"
-                            />
+                            <View style={styles.imageContainer}>
+                                <Image
+                                    source={{
+                                        uri: tour?.urlImage[0] || 'https://i.pinimg.com/474x/c4/a0/8a/c4a08aa606e7f447dce470177e14be56.jpg'
+                                    }}
+                                    style={styles.tourAvt}
+                                    resizeMode="cover"
+                                />
+                                <Pressable
+                                    style={styles.favoriteButton}
+                                    onPress={() => handleInteraction(tour.tourId, "SAVED")}
+                                >
+                                    <AntDesign name="hearto" size={20} color="red" />
+                                </Pressable>
+                            </View>
                             <View style={styles.detailTour}>
                                 <Text style={{ fontSize: 14, fontWeight: "500" }}>{tour.name}</Text>
                                 <View style={styles.rowAround}>
@@ -42,18 +102,18 @@ const TourComponent = ({ navigation, route, listTour }) => {
                                     </View>
                                     <View style={[styles.row, { paddingRight: 10, alignItems: "center" }]}>
                                         {tour.tourFeatureDTO.transportationMode.includes("AIRPLANE") && (
-                                           <FontAwesome6 style={{ paddingRight: 10 }} name="plane" size={16} color="black" />
+                                            <FontAwesome6 style={{ paddingRight: 10 }} name="plane" size={16} color="black" />
                                         )}
                                         {tour.tourFeatureDTO.transportationMode.includes("BUS") && (
                                             <FontAwesome6 style={{ paddingRight: 10 }} name="bus-simple" size={16} color="black" />
                                         )}
                                         {tour.tourFeatureDTO.transportationMode.includes("TRAIN") && (
-                                          <FontAwesome6 style={{ paddingRight: 10 }} name="train" size={16} color="black" />
+                                            <FontAwesome6 style={{ paddingRight: 10 }} name="train" size={16} color="black" />
                                         )}
                                         {tour.tourFeatureDTO.transportationMode.includes("PRIVATE_CAR") && (
-                                          <FontAwesome6 style={{ paddingRight: 10 }} name="car" size={16} color="black" />
+                                            <FontAwesome6 style={{ paddingRight: 10 }} name="car" size={16} color="black" />
                                         )}
-                                       <Ionicons name="partly-sunny-outline" size={20} color="black" />
+                                        <Ionicons name="partly-sunny-outline" size={20} color="black" />
                                     </View>
                                 </View>
                                 <View style={styles.row}><AntDesign name="calendar" size={16} color="black" /><Text style={{ fontSize: 12 }}>Khởi hành: {formatDate(tour.departureDate)}</Text></View>
@@ -98,12 +158,24 @@ const styles = StyleSheet.create({
     tour: {
         flexDirection: "col",
     },
+    imageContainer: {
+        position: "relative",
+    },
+
     tourAvt: {
         width: '100%',
         height: 140,
         backgroundColor: "red",
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
+    },
+    favoriteButton: {
+        position: "absolute",
+        top: 10,
+        right: 10,
+        backgroundColor: "rgba(255, 255, 255, 0.8)",
+        padding: 5,
+        borderRadius: 50,
     },
     detailTour: {
         paddingLeft: 5

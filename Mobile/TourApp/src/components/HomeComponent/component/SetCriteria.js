@@ -5,351 +5,371 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import TourComponent from "./TourComponent";
+import axiosInstance from "../../../api/axiosInstance";
+import Toast from "react-native-toast-message";
+import dayjs from "dayjs";
+import { useAuthContext } from "../../../contexts/AuthContext";
 const SetCriteria = ({ navigation }) => {
-    const [maxPrice, setMaxPrice] = useState(10000);
-    const [numberPeople, setNumberPeople] = useState(1);
+    const { authUser } = useAuthContext();
 
-    const [listMienBac, setListMienBac] = useState([
-        {
-            url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605863/968c81c7-7e7b-447c-962c-7f2c62af98c5.png",
-            price: '6500000',
-            originalPrice: '8500000',
-            title: 'Vịnh Hạ Long-Quảng Ninh',
-            ngayKhoiHanh: "05-09-2024",
-            thoiGian: "3 ngày 2 đêm",
-            thoiTiet: "nang",
-            soLuongVe: 50,
-            soVeDaDat: 32,
-            noiKhoiHanh: "Hồ Chí Minh",
-            diemThamQuan: "Vịnh Hạ Long-Quảng Ninh-Núi Đá",
-            noiNghiNgoi: "Khách sạn",
-            amThuc: "03 bữa sáng + 03 bữa trưa + 02 bữa tối.",
-            phuongTien: "may bay, xe du lịch",
-            listAnh: ["https://res.cloudinary.com/doqbelkif/image/upload/v1726605863/968c81c7-7e7b-447c-962c-7f2c62af98c5.png",
-                "https://res.cloudinary.com/doqbelkif/image/upload/v1726605863/968c81c7-7e7b-447c-962c-7f2c62af98c5.png",
-                "https://res.cloudinary.com/doqbelkif/image/upload/v1726605834/fb61f333-e383-44d1-b1d6-7727f04c7ad1.png"],
-            traiNghiem: "Nằm dọc vùng Duyên hải Nam Trung Bộ, Mũi Né là một thị trấn nghỉ dưỡng yên tĩnh, nổi tiếng với những bãi biển tuyệt đẹp, cồn cát rực rỡ và thời tiết nắng ấm quanh năm. Từng là bí mật, giờ đây Mũi Né đã trở thành điểm đến phổ biến cho những người tìm kiếm sự thư giãn, hoạt động ngoài trời và vẻ đẹp tự nhiên.",
-            chuongTrinh: [{
-                title: "Phan Thiết- Nui Tà Cù",
-                detail: " Đến với Bình Thuận Quý khách dừng chân và tham quan:  + NÚI TÀ CÚ: là một địa điểm leo núi, khung cảnh nơi đây hoang sơ, ký vỹ với núi non trùng điệp, thấp thoáng mái chùa có kính ấn sau rừng cây. "
-            },
-            {
-                title: "Khu du lịch Bàu Sen",
-                detail: "  Đoàn dùng bữa trưa tại nhà hàng KDL TA CŨ dưới chân núi. Tại đây, quý khách có thể thu giân thưởng thức món giải khát thanh nhiệt, nổi tiếng Bình Thuận: MỦ TRÔM ĐƯỜNG PHÊN hoặc mua làm quà cho người thân.  "
-            },
-            {
-                title: "Biển Mũi Né",
-                detail: "Quý khách dùng bữa tối. Sau đó tự do nghỉ ngơi hoặc dạo biển đêm Mũi"
-            }
-            ],
-            thongTinTapTrung: {
-                ngay: "05-09-2024",
-                noi: "Sân bay tân sơn nhất, HCM"
-            },
-            thongTinHuongDanVien: {
-                doan: "Bảo Trúc",
-                tien: "Mai"
-            },
-            dieuKien: {
-                baoGom: "Khách sạn: Phòng tiện nghi điều hoà, tivi, nóng lạnh khép kín 02-03 người/phòng.Phương tiện: 01 xe ô tô chỗ du lịch hiện đại, điều hòa, đời mới đưa ",
-                khongBaoGom: "Bữa chính: 03 bữa sáng + 03 bữa trưa + 02 bữa tối.Vé thắng cảnh vào cổng các điểm du lịch theo chương trình.",
-                giaveTreEm: "Mỗi gia đình chỉ có tiêu chuẩn là 1 trẻ em, trẻ em thứ 2 tính như người lớn, tính 100% giá tour.Dưới 05 tuổi: Miễn phí giá tour. Bố Mẹ tự lo ăn, nghỉ, vé thăm quan - nếu có.",
-                huyTour: "+ Quy định hủy đối với ngày lễ, tết - Hủy trước 10 ngày khởi hành hoàn 50% phí tour - Hủy trước 03-09 ngày khởi hành hoàn 25% phí  .",
-                thanhToan: "Quý khách nộp hồ sơ và đặt cọc 50% chi phí dịch vụ và 100% chi phí phát sinh (nếu có) khi đặt chổ."
-            }
-        },
-        {
-            url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605834/fb61f333-e383-44d1-b1d6-7727f04c7ad1.png",
-            price: '7845000',
-            originalPrice: '9550000',
-            title: 'Hà Giang',
-            ngayKhoiHanh: "15-09-2024",
-            thoiGian: "3 ngày 2 đêm",
-            thoiTiet: "nang",
-            soLuongVe: 32,
-            soVeDaDat: 12,
-            noiKhoiHanh: "Đà Nẵng",
-            diemThamQuan: "Vịnh Hạ Long-Quảng Ninh-Núi Đá",
-            noiNghiNgoi: "Khách sạn",
-            amThuc: "03 bữa sáng + 03 bữa trưa + 02 bữa tối.",
-            phuongTien: "may bay, xe du lịch",
-            listAnh: ["https://res.cloudinary.com/doqbelkif/image/upload/v1726605810/62c96cbc-6b19-4a94-a180-b0d16ac5a9b4.png",
-                "https://res.cloudinary.com/doqbelkif/image/upload/v1726605863/968c81c7-7e7b-447c-962c-7f2c62af98c5.png",
-                "https://res.cloudinary.com/doqbelkif/image/upload/v1726605834/fb61f333-e383-44d1-b1d6-7727f04c7ad1.png"],
-            traiNghiem: "Nằm dọc vùng Duyên hải Nam Trung Bộ, Mũi Né là một thị trấn nghỉ dưỡng yên tĩnh, nổi tiếng với những bãi biển tuyệt đẹp, cồn cát rực rỡ và thời tiết nắng ấm quanh năm. Từng là bí mật, giờ đây Mũi Né đã trở thành điểm đến phổ biến cho những người tìm kiếm sự thư giãn, hoạt động ngoài trời và vẻ đẹp tự nhiên.",
-            chuongTrinh: [{
-                title: "Phan Thiết- Nui Tà Cù",
-                detail: " Đến với Bình Thuận Quý khách dừng chân và tham quan:  + NÚI TÀ CÚ: là một địa điểm leo núi, khung cảnh nơi đây hoang sơ, ký vỹ với núi non trùng điệp, thấp thoáng mái chùa có kính ấn sau rừng cây. "
-            },
-            {
-                title: "Khu du lịch Bàu Sen",
-                detail: "  Đoàn dùng bữa trưa tại nhà hàng KDL TA CŨ dưới chân núi. Tại đây, quý khách có thể thu giân thưởng thức món giải khát thanh nhiệt, nổi tiếng Bình Thuận: MỦ TRÔM ĐƯỜNG PHÊN hoặc mua làm quà cho người thân.  "
-            },
-            {
-                title: "Biển Mũi Né",
-                detail: "Quý khách dùng bữa tối. Sau đó tự do nghỉ ngơi hoặc dạo biển đêm Mũi"
-            }
-            ],
-            thongTinTapTrung: {
-                ngay: "05-09-2024",
-                noi: "Sân bay tân sơn nhất, HCM"
-            },
-            thongTinHuongDanVien: {
-                doan: "Bảo Trúc",
-            }
-        },
-        {
-            url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605810/62c96cbc-6b19-4a94-a180-b0d16ac5a9b4.png",
-            price: '7880000',
-            originalPrice: '10240000',
-            title: 'Sapa',
-            ngayKhoiHanh: "18-09-2024",
-            thoiGian: "3 ngày 2 đêm",
-            thoiTiet: "nang",
-            soLuongVe: 52,
-            soVeDaDat: 43,
-            noiKhoiHanh: "Đà Nẵng",
-            diemThamQuan: "Vịnh Hạ Long-Quảng Ninh-Núi Đá",
-            noiNghiNgoi: "Khách sạn",
-            amThuc: "03 bữa sáng + 03 bữa trưa + 02 bữa tối.",
-            phuongTien: "may bay, xe du lịch",
-            listAnh: ["https://res.cloudinary.com/doqbelkif/image/upload/v1726605810/62c96cbc-6b19-4a94-a180-b0d16ac5a9b4.png",
-                "https://res.cloudinary.com/doqbelkif/image/upload/v1726605863/968c81c7-7e7b-447c-962c-7f2c62af98c5.png",
-                "https://res.cloudinary.com/doqbelkif/image/upload/v1726605834/fb61f333-e383-44d1-b1d6-7727f04c7ad1.png"],
-            traiNghiem: "Nằm dọc vùng Duyên hải Nam Trung Bộ, Mũi Né là một thị trấn nghỉ dưỡng yên tĩnh, nổi tiếng với những bãi biển tuyệt đẹp, cồn cát rực rỡ và thời tiết nắng ấm quanh năm. Từng là bí mật, giờ đây Mũi Né đã trở thành điểm đến phổ biến cho những người tìm kiếm sự thư giãn, hoạt động ngoài trời và vẻ đẹp tự nhiên.",
+    const [maxCost, setMaxCost] = useState(6000000);
+    const [maxDuration, setMaxDuration] = useState(0);
+    const [region, setRegion] = useState('NORTH');
+    const [departureLocation, setDepartureLocation] = useState('tp_ho_chi_minh');
+    const [typeTour, setTypeTour] = useState('SPORT');
+    const [accommodationQuality, setAccommodationQuality] = useState('FIVE_STAR_HOTEL');
+    const [transportationMode, setTransportationMode] = useState('AIRPLANE');
+    const [startDate, setStartDate] = useState(new Date());
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const [endDate, setEndDate] = useState(tomorrow);
+    // const [listMienBac, setListMienBac] = useState([
+    //     {
+    //         url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605863/968c81c7-7e7b-447c-962c-7f2c62af98c5.png",
+    //         price: '6500000',
+    //         originalPrice: '8500000',
+    //         title: 'Vịnh Hạ Long-Quảng Ninh',
+    //         ngayKhoiHanh: "05-09-2024",
+    //         thoiGian: "3 ngày 2 đêm",
+    //         thoiTiet: "nang",
+    //         soLuongVe: 50,
+    //         soVeDaDat: 32,
+    //         noiKhoiHanh: "Hồ Chí Minh",
+    //         diemThamQuan: "Vịnh Hạ Long-Quảng Ninh-Núi Đá",
+    //         noiNghiNgoi: "Khách sạn",
+    //         amThuc: "03 bữa sáng + 03 bữa trưa + 02 bữa tối.",
+    //         phuongTien: "may bay, xe du lịch",
+    //         listAnh: ["https://res.cloudinary.com/doqbelkif/image/upload/v1726605863/968c81c7-7e7b-447c-962c-7f2c62af98c5.png",
+    //             "https://res.cloudinary.com/doqbelkif/image/upload/v1726605863/968c81c7-7e7b-447c-962c-7f2c62af98c5.png",
+    //             "https://res.cloudinary.com/doqbelkif/image/upload/v1726605834/fb61f333-e383-44d1-b1d6-7727f04c7ad1.png"],
+    //         traiNghiem: "Nằm dọc vùng Duyên hải Nam Trung Bộ, Mũi Né là một thị trấn nghỉ dưỡng yên tĩnh, nổi tiếng với những bãi biển tuyệt đẹp, cồn cát rực rỡ và thời tiết nắng ấm quanh năm. Từng là bí mật, giờ đây Mũi Né đã trở thành điểm đến phổ biến cho những người tìm kiếm sự thư giãn, hoạt động ngoài trời và vẻ đẹp tự nhiên.",
+    //         chuongTrinh: [{
+    //             title: "Phan Thiết- Nui Tà Cù",
+    //             detail: " Đến với Bình Thuận Quý khách dừng chân và tham quan:  + NÚI TÀ CÚ: là một địa điểm leo núi, khung cảnh nơi đây hoang sơ, ký vỹ với núi non trùng điệp, thấp thoáng mái chùa có kính ấn sau rừng cây. "
+    //         },
+    //         {
+    //             title: "Khu du lịch Bàu Sen",
+    //             detail: "  Đoàn dùng bữa trưa tại nhà hàng KDL TA CŨ dưới chân núi. Tại đây, quý khách có thể thu giân thưởng thức món giải khát thanh nhiệt, nổi tiếng Bình Thuận: MỦ TRÔM ĐƯỜNG PHÊN hoặc mua làm quà cho người thân.  "
+    //         },
+    //         {
+    //             title: "Biển Mũi Né",
+    //             detail: "Quý khách dùng bữa tối. Sau đó tự do nghỉ ngơi hoặc dạo biển đêm Mũi"
+    //         }
+    //         ],
+    //         thongTinTapTrung: {
+    //             ngay: "05-09-2024",
+    //             noi: "Sân bay tân sơn nhất, HCM"
+    //         },
+    //         thongTinHuongDanVien: {
+    //             doan: "Bảo Trúc",
+    //             tien: "Mai"
+    //         },
+    //         dieuKien: {
+    //             baoGom: "Khách sạn: Phòng tiện nghi điều hoà, tivi, nóng lạnh khép kín 02-03 người/phòng.Phương tiện: 01 xe ô tô chỗ du lịch hiện đại, điều hòa, đời mới đưa ",
+    //             khongBaoGom: "Bữa chính: 03 bữa sáng + 03 bữa trưa + 02 bữa tối.Vé thắng cảnh vào cổng các điểm du lịch theo chương trình.",
+    //             giaveTreEm: "Mỗi gia đình chỉ có tiêu chuẩn là 1 trẻ em, trẻ em thứ 2 tính như người lớn, tính 100% giá tour.Dưới 05 tuổi: Miễn phí giá tour. Bố Mẹ tự lo ăn, nghỉ, vé thăm quan - nếu có.",
+    //             huyTour: "+ Quy định hủy đối với ngày lễ, tết - Hủy trước 10 ngày khởi hành hoàn 50% phí tour - Hủy trước 03-09 ngày khởi hành hoàn 25% phí  .",
+    //             thanhToan: "Quý khách nộp hồ sơ và đặt cọc 50% chi phí dịch vụ và 100% chi phí phát sinh (nếu có) khi đặt chổ."
+    //         }
+    //     },
+    //     {
+    //         url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605834/fb61f333-e383-44d1-b1d6-7727f04c7ad1.png",
+    //         price: '7845000',
+    //         originalPrice: '9550000',
+    //         title: 'Hà Giang',
+    //         ngayKhoiHanh: "15-09-2024",
+    //         thoiGian: "3 ngày 2 đêm",
+    //         thoiTiet: "nang",
+    //         soLuongVe: 32,
+    //         soVeDaDat: 12,
+    //         noiKhoiHanh: "Đà Nẵng",
+    //         diemThamQuan: "Vịnh Hạ Long-Quảng Ninh-Núi Đá",
+    //         noiNghiNgoi: "Khách sạn",
+    //         amThuc: "03 bữa sáng + 03 bữa trưa + 02 bữa tối.",
+    //         phuongTien: "may bay, xe du lịch",
+    //         listAnh: ["https://res.cloudinary.com/doqbelkif/image/upload/v1726605810/62c96cbc-6b19-4a94-a180-b0d16ac5a9b4.png",
+    //             "https://res.cloudinary.com/doqbelkif/image/upload/v1726605863/968c81c7-7e7b-447c-962c-7f2c62af98c5.png",
+    //             "https://res.cloudinary.com/doqbelkif/image/upload/v1726605834/fb61f333-e383-44d1-b1d6-7727f04c7ad1.png"],
+    //         traiNghiem: "Nằm dọc vùng Duyên hải Nam Trung Bộ, Mũi Né là một thị trấn nghỉ dưỡng yên tĩnh, nổi tiếng với những bãi biển tuyệt đẹp, cồn cát rực rỡ và thời tiết nắng ấm quanh năm. Từng là bí mật, giờ đây Mũi Né đã trở thành điểm đến phổ biến cho những người tìm kiếm sự thư giãn, hoạt động ngoài trời và vẻ đẹp tự nhiên.",
+    //         chuongTrinh: [{
+    //             title: "Phan Thiết- Nui Tà Cù",
+    //             detail: " Đến với Bình Thuận Quý khách dừng chân và tham quan:  + NÚI TÀ CÚ: là một địa điểm leo núi, khung cảnh nơi đây hoang sơ, ký vỹ với núi non trùng điệp, thấp thoáng mái chùa có kính ấn sau rừng cây. "
+    //         },
+    //         {
+    //             title: "Khu du lịch Bàu Sen",
+    //             detail: "  Đoàn dùng bữa trưa tại nhà hàng KDL TA CŨ dưới chân núi. Tại đây, quý khách có thể thu giân thưởng thức món giải khát thanh nhiệt, nổi tiếng Bình Thuận: MỦ TRÔM ĐƯỜNG PHÊN hoặc mua làm quà cho người thân.  "
+    //         },
+    //         {
+    //             title: "Biển Mũi Né",
+    //             detail: "Quý khách dùng bữa tối. Sau đó tự do nghỉ ngơi hoặc dạo biển đêm Mũi"
+    //         }
+    //         ],
+    //         thongTinTapTrung: {
+    //             ngay: "05-09-2024",
+    //             noi: "Sân bay tân sơn nhất, HCM"
+    //         },
+    //         thongTinHuongDanVien: {
+    //             doan: "Bảo Trúc",
+    //         }
+    //     },
+    //     {
+    //         url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605810/62c96cbc-6b19-4a94-a180-b0d16ac5a9b4.png",
+    //         price: '7880000',
+    //         originalPrice: '10240000',
+    //         title: 'Sapa',
+    //         ngayKhoiHanh: "18-09-2024",
+    //         thoiGian: "3 ngày 2 đêm",
+    //         thoiTiet: "nang",
+    //         soLuongVe: 52,
+    //         soVeDaDat: 43,
+    //         noiKhoiHanh: "Đà Nẵng",
+    //         diemThamQuan: "Vịnh Hạ Long-Quảng Ninh-Núi Đá",
+    //         noiNghiNgoi: "Khách sạn",
+    //         amThuc: "03 bữa sáng + 03 bữa trưa + 02 bữa tối.",
+    //         phuongTien: "may bay, xe du lịch",
+    //         listAnh: ["https://res.cloudinary.com/doqbelkif/image/upload/v1726605810/62c96cbc-6b19-4a94-a180-b0d16ac5a9b4.png",
+    //             "https://res.cloudinary.com/doqbelkif/image/upload/v1726605863/968c81c7-7e7b-447c-962c-7f2c62af98c5.png",
+    //             "https://res.cloudinary.com/doqbelkif/image/upload/v1726605834/fb61f333-e383-44d1-b1d6-7727f04c7ad1.png"],
+    //         traiNghiem: "Nằm dọc vùng Duyên hải Nam Trung Bộ, Mũi Né là một thị trấn nghỉ dưỡng yên tĩnh, nổi tiếng với những bãi biển tuyệt đẹp, cồn cát rực rỡ và thời tiết nắng ấm quanh năm. Từng là bí mật, giờ đây Mũi Né đã trở thành điểm đến phổ biến cho những người tìm kiếm sự thư giãn, hoạt động ngoài trời và vẻ đẹp tự nhiên.",
 
-        },
-        {
-            url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605783/077dc171-f2ed-48e2-a4b4-2c20b5fa4bc7.png",
-            price: '6500000',
-            originalPrice: '8500000',
-            title: 'Hội An',
-            ngayKhoiHanh: "19-10-2024",
-            thoiGian: "5 ngày 4 đêm",
-            thoiTiet: "nang",
-            soLuongVe: 45,
-            soVeDaDat: 42,
-            noiKhoiHanh: "Đà Nẵng",
-            diemThamQuan: "Vịnh Hạ Long-Quảng Ninh-Núi Đá",
-            noiNghiNgoi: "Khách sạn",
-            amThuc: "03 bữa sáng + 03 bữa trưa + 02 bữa tối.",
-            phuongTien: "may bay, xe du lịch",
-            listAnh: ["https://res.cloudinary.com/doqbelkif/image/upload/v1726605810/62c96cbc-6b19-4a94-a180-b0d16ac5a9b4.png",
-                "https://res.cloudinary.com/doqbelkif/image/upload/v1726605863/968c81c7-7e7b-447c-962c-7f2c62af98c5.png",
-                "https://res.cloudinary.com/doqbelkif/image/upload/v1726605834/fb61f333-e383-44d1-b1d6-7727f04c7ad1.png"],
-            traiNghiem: "Nằm dọc vùng Duyên hải Nam Trung Bộ, Mũi Né là một thị trấn nghỉ dưỡng yên tĩnh, nổi tiếng với những bãi biển tuyệt đẹp, cồn cát rực rỡ và thời tiết nắng ấm quanh năm. Từng là bí mật, giờ đây Mũi Né đã trở thành điểm đến phổ biến cho những người tìm kiếm sự thư giãn, hoạt động ngoài trời và vẻ đẹp tự nhiên.",
+    //     },
+    //     {
+    //         url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605783/077dc171-f2ed-48e2-a4b4-2c20b5fa4bc7.png",
+    //         price: '6500000',
+    //         originalPrice: '8500000',
+    //         title: 'Hội An',
+    //         ngayKhoiHanh: "19-10-2024",
+    //         thoiGian: "5 ngày 4 đêm",
+    //         thoiTiet: "nang",
+    //         soLuongVe: 45,
+    //         soVeDaDat: 42,
+    //         noiKhoiHanh: "Đà Nẵng",
+    //         diemThamQuan: "Vịnh Hạ Long-Quảng Ninh-Núi Đá",
+    //         noiNghiNgoi: "Khách sạn",
+    //         amThuc: "03 bữa sáng + 03 bữa trưa + 02 bữa tối.",
+    //         phuongTien: "may bay, xe du lịch",
+    //         listAnh: ["https://res.cloudinary.com/doqbelkif/image/upload/v1726605810/62c96cbc-6b19-4a94-a180-b0d16ac5a9b4.png",
+    //             "https://res.cloudinary.com/doqbelkif/image/upload/v1726605863/968c81c7-7e7b-447c-962c-7f2c62af98c5.png",
+    //             "https://res.cloudinary.com/doqbelkif/image/upload/v1726605834/fb61f333-e383-44d1-b1d6-7727f04c7ad1.png"],
+    //         traiNghiem: "Nằm dọc vùng Duyên hải Nam Trung Bộ, Mũi Né là một thị trấn nghỉ dưỡng yên tĩnh, nổi tiếng với những bãi biển tuyệt đẹp, cồn cát rực rỡ và thời tiết nắng ấm quanh năm. Từng là bí mật, giờ đây Mũi Né đã trở thành điểm đến phổ biến cho những người tìm kiếm sự thư giãn, hoạt động ngoài trời và vẻ đẹp tự nhiên.",
 
-        }, {
-            url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605866/35784823-5c44-4f7e-b095-ec45a2d129ec.png",
-            price: '6570000',
-            originalPrice: '8570000',
-            title: 'Hải Phòng',
-            ngayKhoiHanh: "06-09-2024",
-            thoiGian: "3 ngày 2 đêm",
-            thoiTiet: "nang",
-            soLuongVe: 13,
-            soVeDaDat: 6,
-            noiKhoiHanh: "Đà Nẵng",
-            diemThamQuan: "Vịnh Hạ Long-Quảng Ninh-Núi Đá",
-            noiNghiNgoi: "Khách sạn",
-            amThuc: "03 bữa sáng + 03 bữa trưa + 02 bữa tối.",
-            phuongTien: "may bay, xe du lịch",
-            listAnh: ["https://res.cloudinary.com/doqbelkif/image/upload/v1726605810/62c96cbc-6b19-4a94-a180-b0d16ac5a9b4.png",
-                "https://res.cloudinary.com/doqbelkif/image/upload/v1726605863/968c81c7-7e7b-447c-962c-7f2c62af98c5.png",
-                "https://res.cloudinary.com/doqbelkif/image/upload/v1726605834/fb61f333-e383-44d1-b1d6-7727f04c7ad1.png"],
-            traiNghiem: "Nằm dọc vùng Duyên hải Nam Trung Bộ, Mũi Né là một thị trấn nghỉ dưỡng yên tĩnh, nổi tiếng với những bãi biển tuyệt đẹp, cồn cát rực rỡ và thời tiết nắng ấm quanh năm. Từng là bí mật, giờ đây Mũi Né đã trở thành điểm đến phổ biến cho những người tìm kiếm sự thư giãn, hoạt động ngoài trời và vẻ đẹp tự nhiên.",
+    //     }, {
+    //         url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605866/35784823-5c44-4f7e-b095-ec45a2d129ec.png",
+    //         price: '6570000',
+    //         originalPrice: '8570000',
+    //         title: 'Hải Phòng',
+    //         ngayKhoiHanh: "06-09-2024",
+    //         thoiGian: "3 ngày 2 đêm",
+    //         thoiTiet: "nang",
+    //         soLuongVe: 13,
+    //         soVeDaDat: 6,
+    //         noiKhoiHanh: "Đà Nẵng",
+    //         diemThamQuan: "Vịnh Hạ Long-Quảng Ninh-Núi Đá",
+    //         noiNghiNgoi: "Khách sạn",
+    //         amThuc: "03 bữa sáng + 03 bữa trưa + 02 bữa tối.",
+    //         phuongTien: "may bay, xe du lịch",
+    //         listAnh: ["https://res.cloudinary.com/doqbelkif/image/upload/v1726605810/62c96cbc-6b19-4a94-a180-b0d16ac5a9b4.png",
+    //             "https://res.cloudinary.com/doqbelkif/image/upload/v1726605863/968c81c7-7e7b-447c-962c-7f2c62af98c5.png",
+    //             "https://res.cloudinary.com/doqbelkif/image/upload/v1726605834/fb61f333-e383-44d1-b1d6-7727f04c7ad1.png"],
+    //         traiNghiem: "Nằm dọc vùng Duyên hải Nam Trung Bộ, Mũi Né là một thị trấn nghỉ dưỡng yên tĩnh, nổi tiếng với những bãi biển tuyệt đẹp, cồn cát rực rỡ và thời tiết nắng ấm quanh năm. Từng là bí mật, giờ đây Mũi Né đã trở thành điểm đến phổ biến cho những người tìm kiếm sự thư giãn, hoạt động ngoài trời và vẻ đẹp tự nhiên.",
 
-        },
-        ,
+    //     },
+    //     ,
 
-    ]);
-    const [listMienTay, setListMienTay] = useState([
-        {
-            url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605863/968c81c7-7e7b-447c-962c-7f2c62af98c5.png",
-            price: '6500000',
-            originalPrice: '8500000',
-            title: 'Ninh Bình',
-            ngayKhoiHanh: "05-09-2024",
-            thoiGian: "3 ngày 2 đêm",
-            thoiTiet: "nang",
-            soLuongVe: 50,
-            soVeDaDat: 32,
-        },
-        {
-            url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605834/fb61f333-e383-44d1-b1d6-7727f04c7ad1.png",
-            price: '7845000',
-            originalPrice: '9550000',
-            title: 'Phú Quốc',
-            ngayKhoiHanh: "15-09-2024",
-            thoiGian: "3 ngày 2 đêm",
-            thoiTiet: "nang",
-            soLuongVe: 32,
-            soVeDaDat: 12,
-        },
-        {
-            url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605810/62c96cbc-6b19-4a94-a180-b0d16ac5a9b4.png",
-            price: '7880000',
-            originalPrice: '10240000',
-            title: 'Long An',
-            ngayKhoiHanh: "18-09-2024",
-            thoiGian: "3 ngày 2 đêm",
-            thoiTiet: "nang",
-            soLuongVe: 52,
-            soVeDaDat: 43,
-        },
-        {
-            url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605783/077dc171-f2ed-48e2-a4b4-2c20b5fa4bc7.png",
-            price: '6500000',
-            originalPrice: '8500000',
-            title: 'Cà Mau',
-            ngayKhoiHanh: "19-10-2024",
-            thoiGian: "5 ngày 4 đêm",
-            thoiTiet: "nang",
-            soLuongVe: 45,
-            soVeDaDat: 42,
-        }, {
-            url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605866/35784823-5c44-4f7e-b095-ec45a2d129ec.png",
-            price: '6570000',
-            originalPrice: '8570000',
-            title: 'Sóc Trăng',
-            ngayKhoiHanh: "06-09-2024",
-            thoiGian: "3 ngày 2 đêm",
-            thoiTiet: "nang",
-            soLuongVe: 13,
-            soVeDaDat: 6,
-        },
-        ,
+    // ]);
+    // const [listMienTay, setListMienTay] = useState([
+    //     {
+    //         url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605863/968c81c7-7e7b-447c-962c-7f2c62af98c5.png",
+    //         price: '6500000',
+    //         originalPrice: '8500000',
+    //         title: 'Ninh Bình',
+    //         ngayKhoiHanh: "05-09-2024",
+    //         thoiGian: "3 ngày 2 đêm",
+    //         thoiTiet: "nang",
+    //         soLuongVe: 50,
+    //         soVeDaDat: 32,
+    //     },
+    //     {
+    //         url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605834/fb61f333-e383-44d1-b1d6-7727f04c7ad1.png",
+    //         price: '7845000',
+    //         originalPrice: '9550000',
+    //         title: 'Phú Quốc',
+    //         ngayKhoiHanh: "15-09-2024",
+    //         thoiGian: "3 ngày 2 đêm",
+    //         thoiTiet: "nang",
+    //         soLuongVe: 32,
+    //         soVeDaDat: 12,
+    //     },
+    //     {
+    //         url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605810/62c96cbc-6b19-4a94-a180-b0d16ac5a9b4.png",
+    //         price: '7880000',
+    //         originalPrice: '10240000',
+    //         title: 'Long An',
+    //         ngayKhoiHanh: "18-09-2024",
+    //         thoiGian: "3 ngày 2 đêm",
+    //         thoiTiet: "nang",
+    //         soLuongVe: 52,
+    //         soVeDaDat: 43,
+    //     },
+    //     {
+    //         url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605783/077dc171-f2ed-48e2-a4b4-2c20b5fa4bc7.png",
+    //         price: '6500000',
+    //         originalPrice: '8500000',
+    //         title: 'Cà Mau',
+    //         ngayKhoiHanh: "19-10-2024",
+    //         thoiGian: "5 ngày 4 đêm",
+    //         thoiTiet: "nang",
+    //         soLuongVe: 45,
+    //         soVeDaDat: 42,
+    //     }, {
+    //         url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605866/35784823-5c44-4f7e-b095-ec45a2d129ec.png",
+    //         price: '6570000',
+    //         originalPrice: '8570000',
+    //         title: 'Sóc Trăng',
+    //         ngayKhoiHanh: "06-09-2024",
+    //         thoiGian: "3 ngày 2 đêm",
+    //         thoiTiet: "nang",
+    //         soLuongVe: 13,
+    //         soVeDaDat: 6,
+    //     },
+    //     ,
 
-    ]);
-    const [listMienTrung, setListMienTrung] = useState([
-        {
-            url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605863/968c81c7-7e7b-447c-962c-7f2c62af98c5.png",
-            price: '6500000',
-            originalPrice: '8500000',
-            title: 'Đà Nẵng',
-            ngayKhoiHanh: "05-09-2024",
-            thoiGian: "3 ngày 2 đêm",
-            thoiTiet: "nang",
-            soLuongVe: 50,
-            soVeDaDat: 32,
-        },
-        {
-            url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605834/fb61f333-e383-44d1-b1d6-7727f04c7ad1.png",
-            price: '7845000',
-            originalPrice: '9550000',
-            title: 'Quảng Nam',
-            ngayKhoiHanh: "15-09-2024",
-            thoiGian: "3 ngày 2 đêm",
-            thoiTiet: "nang",
-            soLuongVe: 32,
-            soVeDaDat: 12,
-        },
-        {
-            url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605810/62c96cbc-6b19-4a94-a180-b0d16ac5a9b4.png",
-            price: '7880000',
-            originalPrice: '10240000',
-            title: 'Quảng Ngãi',
-            ngayKhoiHanh: "18-09-2024",
-            thoiGian: "3 ngày 2 đêm",
-            thoiTiet: "nang",
-            soLuongVe: 52,
-            soVeDaDat: 43,
-        },
-        {
-            url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605783/077dc171-f2ed-48e2-a4b4-2c20b5fa4bc7.png",
-            price: '6500000',
-            originalPrice: '8500000',
-            title: 'Bình Thuận',
-            ngayKhoiHanh: "19-10-2024",
-            thoiGian: "5 ngày 4 đêm",
-            thoiTiet: "nang",
-            soLuongVe: 45,
-            soVeDaDat: 42,
-        }, {
-            url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605866/35784823-5c44-4f7e-b095-ec45a2d129ec.png",
-            price: '6570000',
-            originalPrice: '8570000',
-            title: 'Biển Miềng Trung',
-            ngayKhoiHanh: "06-09-2024",
-            thoiGian: "3 ngày 2 đêm",
-            thoiTiet: "nang",
-            soLuongVe: 13,
-            soVeDaDat: 6,
-        },
-        ,
+    // ]);
+    // const [listMienTrung, setListMienTrung] = useState([
+    //     {
+    //         url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605863/968c81c7-7e7b-447c-962c-7f2c62af98c5.png",
+    //         price: '6500000',
+    //         originalPrice: '8500000',
+    //         title: 'Đà Nẵng',
+    //         ngayKhoiHanh: "05-09-2024",
+    //         thoiGian: "3 ngày 2 đêm",
+    //         thoiTiet: "nang",
+    //         soLuongVe: 50,
+    //         soVeDaDat: 32,
+    //     },
+    //     {
+    //         url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605834/fb61f333-e383-44d1-b1d6-7727f04c7ad1.png",
+    //         price: '7845000',
+    //         originalPrice: '9550000',
+    //         title: 'Quảng Nam',
+    //         ngayKhoiHanh: "15-09-2024",
+    //         thoiGian: "3 ngày 2 đêm",
+    //         thoiTiet: "nang",
+    //         soLuongVe: 32,
+    //         soVeDaDat: 12,
+    //     },
+    //     {
+    //         url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605810/62c96cbc-6b19-4a94-a180-b0d16ac5a9b4.png",
+    //         price: '7880000',
+    //         originalPrice: '10240000',
+    //         title: 'Quảng Ngãi',
+    //         ngayKhoiHanh: "18-09-2024",
+    //         thoiGian: "3 ngày 2 đêm",
+    //         thoiTiet: "nang",
+    //         soLuongVe: 52,
+    //         soVeDaDat: 43,
+    //     },
+    //     {
+    //         url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605783/077dc171-f2ed-48e2-a4b4-2c20b5fa4bc7.png",
+    //         price: '6500000',
+    //         originalPrice: '8500000',
+    //         title: 'Bình Thuận',
+    //         ngayKhoiHanh: "19-10-2024",
+    //         thoiGian: "5 ngày 4 đêm",
+    //         thoiTiet: "nang",
+    //         soLuongVe: 45,
+    //         soVeDaDat: 42,
+    //     }, {
+    //         url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605866/35784823-5c44-4f7e-b095-ec45a2d129ec.png",
+    //         price: '6570000',
+    //         originalPrice: '8570000',
+    //         title: 'Biển Miềng Trung',
+    //         ngayKhoiHanh: "06-09-2024",
+    //         thoiGian: "3 ngày 2 đêm",
+    //         thoiTiet: "nang",
+    //         soLuongVe: 13,
+    //         soVeDaDat: 6,
+    //     },
+    //     ,
 
-    ]);
-    const [listMienNam, setListMienNam] = useState([
-        {
-            url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605863/968c81c7-7e7b-447c-962c-7f2c62af98c5.png",
-            price: '6500000',
-            originalPrice: '8500000',
-            title: 'Hồ Chí Minh',
-            ngayKhoiHanh: "05-09-2024",
-            thoiGian: "3 ngày 2 đêm",
-            thoiTiet: "nang",
-            soLuongVe: 50,
-            soVeDaDat: 32,
-        },
-        {
-            url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605834/fb61f333-e383-44d1-b1d6-7727f04c7ad1.png",
-            price: '7845000',
-            originalPrice: '9550000',
-            title: 'Nhà Thờ Dức Bà - Phố đi Bộ',
-            ngayKhoiHanh: "15-09-2024",
-            thoiGian: "3 ngày 2 đêm",
-            thoiTiet: "nang",
-            soLuongVe: 32,
-            soVeDaDat: 12,
-        },
-        {
-            url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605810/62c96cbc-6b19-4a94-a180-b0d16ac5a9b4.png",
-            price: '7880000',
-            originalPrice: '10240000',
-            title: 'Tây Ninh',
-            ngayKhoiHanh: "18-09-2024",
-            thoiGian: "3 ngày 2 đêm",
-            thoiTiet: "nang",
-            soLuongVe: 52,
-            soVeDaDat: 43,
-        },
-        {
-            url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605783/077dc171-f2ed-48e2-a4b4-2c20b5fa4bc7.png",
-            price: '6500000',
-            originalPrice: '8500000',
-            title: 'Bình Dương',
-            ngayKhoiHanh: "19-10-2024",
-            thoiGian: "5 ngày 4 đêm",
-            thoiTiet: "nang",
-            soLuongVe: 45,
-            soVeDaDat: 42,
-        }, {
-            url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605866/35784823-5c44-4f7e-b095-ec45a2d129ec.png",
-            price: '6570000',
-            originalPrice: '8570000',
-            title: 'Đồng Nai',
-            ngayKhoiHanh: "06-09-2024",
-            thoiGian: "3 ngày 2 đêm",
-            thoiTiet: "nang",
-            soLuongVe: 13,
-            soVeDaDat: 6,
-        },
-        ,
+    // ]);
+    // const [listMienNam, setListMienNam] = useState([
+    //     {
+    //         url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605863/968c81c7-7e7b-447c-962c-7f2c62af98c5.png",
+    //         price: '6500000',
+    //         originalPrice: '8500000',
+    //         title: 'Hồ Chí Minh',
+    //         ngayKhoiHanh: "05-09-2024",
+    //         thoiGian: "3 ngày 2 đêm",
+    //         thoiTiet: "nang",
+    //         soLuongVe: 50,
+    //         soVeDaDat: 32,
+    //     },
+    //     {
+    //         url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605834/fb61f333-e383-44d1-b1d6-7727f04c7ad1.png",
+    //         price: '7845000',
+    //         originalPrice: '9550000',
+    //         title: 'Nhà Thờ Dức Bà - Phố đi Bộ',
+    //         ngayKhoiHanh: "15-09-2024",
+    //         thoiGian: "3 ngày 2 đêm",
+    //         thoiTiet: "nang",
+    //         soLuongVe: 32,
+    //         soVeDaDat: 12,
+    //     },
+    //     {
+    //         url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605810/62c96cbc-6b19-4a94-a180-b0d16ac5a9b4.png",
+    //         price: '7880000',
+    //         originalPrice: '10240000',
+    //         title: 'Tây Ninh',
+    //         ngayKhoiHanh: "18-09-2024",
+    //         thoiGian: "3 ngày 2 đêm",
+    //         thoiTiet: "nang",
+    //         soLuongVe: 52,
+    //         soVeDaDat: 43,
+    //     },
+    //     {
+    //         url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605783/077dc171-f2ed-48e2-a4b4-2c20b5fa4bc7.png",
+    //         price: '6500000',
+    //         originalPrice: '8500000',
+    //         title: 'Bình Dương',
+    //         ngayKhoiHanh: "19-10-2024",
+    //         thoiGian: "5 ngày 4 đêm",
+    //         thoiTiet: "nang",
+    //         soLuongVe: 45,
+    //         soVeDaDat: 42,
+    //     }, {
+    //         url: "https://res.cloudinary.com/doqbelkif/image/upload/v1726605866/35784823-5c44-4f7e-b095-ec45a2d129ec.png",
+    //         price: '6570000',
+    //         originalPrice: '8570000',
+    //         title: 'Đồng Nai',
+    //         ngayKhoiHanh: "06-09-2024",
+    //         thoiGian: "3 ngày 2 đêm",
+    //         thoiTiet: "nang",
+    //         soLuongVe: 13,
+    //         soVeDaDat: 6,
+    //     },
+    //     ,
 
-    ]);
-
+    // ]);
+    const maxCosts = [
+        { value: 4000000, label: "Dưới 4.000.000 đ" },
+        { value: 5000000, label: "Dưới 5.000.000 đ" },
+        { value: 6000000, label: "Dưới 6.000.000 đ" },
+        { value: 7000000, label: "Dưới 7.000.000 đ" },
+        { value: 8000000, label: "Dưới 8.000.000 đ" },
+    ];
     const types = [
-        { value: 'mh', label: 'Mạo hiểm' },
-        { value: 'tq', label: 'Tham quan' },
-        { value: 'vh', label: 'Văn hóa' },
-        { value: 'st', label: 'Sinh thái' },
-        { value: 'nd', label: 'Nghỉ dưỡng' },
-        { value: 'tb', label: 'Team building' },
+        { value: "SPORT", label: "Mạo hiểm" },
+        { value: "DISCOVER", label: "Tham quan" },
+        { value: "CULTURE", label: "Văn hóa" },
+        { value: "ECOLOGY", label: "Sinh thái" },
+        { value: "RESORT", label: "Nghỉ dưỡng" },
+        { value: "ENTERTAINMENT", label: "Giải trí" },
     ]
     const regions = [
-        { value: 'mb', label: 'Miền Bắc' },
-        { value: 'mt', label: 'Miền Trung' },
-        { value: 'mn', label: 'Miền Nam' },
+        { value: "NORTH", label: "Miền Bắc" },
+        { value: "CENTRAL", label: "Miền Trung" },
+        { value: "SOUTH", label: "Miền Nam" },
     ]
     const times = [
         { value: '1n', label: 'Trong ngày' },
@@ -358,17 +378,18 @@ const SetCriteria = ({ navigation }) => {
         { value: '4n3d', label: '4 ngày 3 đêm' },
     ]
     const transportations = [
-        { value: 'mb', label: 'Máy bay' },
-        { value: 'bus', label: 'Xe buýt' },
-        { value: 'oto', label: 'Ô tô' },
-        { value: 'train', label: 'Tàu hỏa' },
+        { value: "AIRPLANE", label: "Máy bay" },
+        { value: "BUS", label: "Xe buýt" },
+        { value: "PRIVATE_CAR", label: "Ô tô" },
+        { value: "TRAIN", label: "Tàu hỏa" },
+        { value: "SHIP", label: "Du thuyền" },
     ]
     const qualityOfAccommodations = [
-        { value: 'ks5', label: 'Khách sạn 5 sao' },
-        { value: 'ks4', label: 'Khách sạn 4 sao' },
-        { value: 'ks3', label: 'Khách sạn 3 sao' },
-        { value: 'resort', label: 'Resort' },
-        { value: 'homestay', label: 'Homestay' },
+        { value: "FIVE_STAR_HOTEL", label: "Khách sạn 5 sao" },
+        { value: "FOUR_STAR_HOTEL", label: "Khách sạn 4 sao" },
+        { value: "THREE_STAR_HOTEL", label: "Khách sạn 3 sao" },
+        { value: "RESORT", label: "Resort" },
+        { value: "HOMESTAY", label: "Homestay" },
     ]
     const citys = [
         { value: 'an_giang', label: 'An Giang' },
@@ -435,42 +456,110 @@ const SetCriteria = ({ navigation }) => {
         { value: 'vinh_phuc', label: 'Vĩnh Phúc' },
         { value: 'yen_bai', label: 'Yên Bái' }
     ];
-    const [selectedNoiKhoiHanh, setSelectedNoiKhoiHanh] = useState(citys[0].value);
 
-    const [choosedMien, setChoosedMien] = useState(0);
-    const [choosedOption, setChoosedOption] = useState(0);
-
-    const chooseMien = (a) => {
-        setChoosedMien(a);
-    };
-    const chooseOption = (a) => {
-        setChoosedOption(a);
-    };
-    const [dateBD, setDateBD] = useState(new Date());
+    // const [startDate, setstartDate] = useState(new Date());
     const [showBD, setShowBD] = useState(false);
 
     const onChangeBD = (event, selectedDate) => {
         const currentDate = selectedDate || date;
         // setShow(Platform.OS === 'ios'); // Ẩn lịch nếu không phải iOS
-        setDateBD(currentDate); // Cập nhật ngày đã chọn
+        setStartDate(currentDate); // Cập nhật ngày đã chọn
         setShowBD(false);
     };
 
     const showDatePickerBD = () => {
         setShowBD(true);
     };
-    const [dateKT, setDateKT] = useState(new Date());
+
     const [showKT, setShowKT] = useState(false);
 
     const onChangeKT = (event, selectedDate) => {
         const currentDate = selectedDate || date;
         // setShow(Platform.OS === 'ios'); // Ẩn lịch nếu không phải iOS
-        setDateKT(currentDate); // Cập nhật ngày đã chọn
+        setEndDate(currentDate); // Cập nhật ngày đã chọn
         setShowKT(false);
     };
 
     const showDatePickerKT = () => {
         setShowKT(true);
+    };
+    const fetchRecommendation = async () => {
+
+        if (!authUser) {
+
+            // setRecommendTour([]); // Nếu user chưa đăng nhập, không gọi API
+            return;
+        }
+        const url = `/recommendation/${authUser?.userId}?page=1&size=10`;
+
+        try {
+            const response = await axiosInstance.get(url);
+            if (response.data.content.length === 0) {
+                console.info("No recommendations found for this user");
+            } else {
+                navigation.navigate("ListTour", { listTour: response.data.content, title: "TOUR GỢI Ý CHO BẠN", region: "RECOMMEND", authUser: authUser });
+
+                // setRecommendTour(response.data.content);
+                // console.log('re', response.data.content);
+            }
+        } catch (error) {
+            console.error("Failed to fetch recommendation:", error);
+            // setRecommendTour([]);
+        }
+    };
+
+
+    const addPreference = async () => {
+        const preference = {
+            region: region,
+            maxCost: maxCost,
+            maxDuration: 0,
+            startDate: startDate,
+            endDate: endDate,
+            typeTour: typeTour,
+            accommodationQuality: accommodationQuality,
+            transportationMode: transportationMode,
+            departureLocation: departureLocation,
+            cusId: authUser.userId
+        };
+        console.log(preference)
+        try {
+            const response = await axiosInstance.post(
+                `/recommendation/customer-preference`,
+                // {
+                //     region,
+                //     maxCost,
+                //     maxDuration,
+                //     startDate,
+                //     departureLocation,
+                //     typeTour,
+                //     accommodationQuality,
+                //     transportationMode,
+                //     endDate
+                // },
+                preference
+            );
+            console.log(response)
+            Toast.show({
+                type: "success",
+                text1: "Thiết lập tiêu chí thành công",
+                position: "bottom",
+                visibilityTime: 4000,
+                autoHide: true,
+            });
+            fetchRecommendation();
+            return response.data;
+        } catch (error) {
+            // console.log(error.response)
+            Toast.show({
+                type: "error",
+                text1: "Thiết lập không thành công",
+                text2: error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại.",
+                position: "bottom",
+                visibilityTime: 4000,
+                autoHide: true,
+            });
+        }
     };
 
     return (
@@ -494,8 +583,8 @@ const SetCriteria = ({ navigation }) => {
                             <Text style={styles.textTieuChi}>Điểm khởi hành</Text>
                             <View style={styles.formPicker}>
                                 <Picker
-                                    selectedValue={selectedNoiKhoiHanh}
-                                    onValueChange={(itemValue) => setSelectedNoiKhoiHanh(itemValue)}
+                                    selectedValue={departureLocation}
+                                    onValueChange={(itemValue) => setDepartureLocation(itemValue)}
                                 >
                                     {citys.map((item, index) => (
                                         <Picker.Item key={index} label={item.label} value={item.value} style={styles.textPicker} />
@@ -506,14 +595,14 @@ const SetCriteria = ({ navigation }) => {
                         <TouchableOpacity style={styles.optionButtonTieuChi}>
                             <Text style={styles.textTieuChi}>Mức giá tối đa</Text>
                             <View style={styles.formPicker}>
-                                <TextInput
-                                    style={{ fontSize: 12, paddingLeft: 15 }}
-                                    // placeholder="Nhập số tiền tối đa"
-                                    value={maxPrice.toString()} 
-                                    onChangeText={setMaxPrice}
-                                    keyboardType="numeric" // Loại bàn phím
-                                />
-
+                                <Picker
+                                    selectedValue={maxCost}
+                                    onValueChange={(itemValue) => setMaxCost(itemValue)}
+                                >
+                                    {maxCosts.map((item, index) => (
+                                        <Picker.Item key={index} label={item.label} value={item.value} style={styles.textPicker} />
+                                    ))}
+                                </Picker>
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -522,8 +611,8 @@ const SetCriteria = ({ navigation }) => {
                             <Text style={styles.textTieuChi}>Phương tiện di chuyển</Text>
                             <View style={styles.formPicker}>
                                 <Picker
-                                    selectedValue={selectedNoiKhoiHanh}
-                                    onValueChange={(itemValue) => setSelectedNoiKhoiHanh(itemValue)}
+                                    selectedValue={transportationMode}
+                                    onValueChange={(itemValue) => setTransportationMode(itemValue)}
                                 >
                                     {transportations.map((item, index) => (
                                         <Picker.Item key={index} label={item.label} value={item.value} style={styles.textPicker} />
@@ -535,8 +624,8 @@ const SetCriteria = ({ navigation }) => {
                             <Text style={styles.textTieuChi}>Loại tour</Text>
                             <View style={styles.formPicker}>
                                 <Picker
-                                    selectedValue={selectedNoiKhoiHanh}
-                                    onValueChange={(itemValue) => setSelectedNoiKhoiHanh(itemValue)}
+                                    selectedValue={typeTour}
+                                    onValueChange={(itemValue) => setTypeTour(itemValue)}
                                 >
                                     {types.map((item, index) => (
                                         <Picker.Item key={index} label={item.label} value={item.value} style={styles.textPicker} />
@@ -550,8 +639,8 @@ const SetCriteria = ({ navigation }) => {
                             <Text style={styles.textTieuChi}>Chất lượng chổ ở</Text>
                             <View style={styles.formPicker}>
                                 <Picker
-                                    selectedValue={selectedNoiKhoiHanh}
-                                    onValueChange={(itemValue) => setSelectedNoiKhoiHanh(itemValue)}
+                                    selectedValue={accommodationQuality}
+                                    onValueChange={(itemValue) => setAccommodationQuality(itemValue)}
                                 >
                                     {qualityOfAccommodations.map((item, index) => (
                                         <Picker.Item key={index} label={item.label} value={item.value} style={styles.textPicker} />
@@ -560,24 +649,11 @@ const SetCriteria = ({ navigation }) => {
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.optionButtonTieuChi}>
-                            <Text style={styles.textTieuChi}>Số lượng người</Text>
-                            <View style={styles.formPicker}>
-                                <TextInput
-                                    style={{ fontSize: 12, paddingLeft: 15 }}
-                                    value={numberPeople.toString()} 
-                                    onChangeText={setNumberPeople}
-                                    keyboardType="numeric" // Loại bàn phím
-                                />
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.optionsRow}>
-                        <TouchableOpacity style={styles.optionButtonTieuChi}>
                             <Text style={styles.textTieuChi}>Vùng miền</Text>
                             <View style={styles.formPicker}>
                                 <Picker
-                                    selectedValue={selectedNoiKhoiHanh}
-                                    onValueChange={(itemValue) => setSelectedNoiKhoiHanh(itemValue)}
+                                    selectedValue={region}
+                                    onValueChange={(itemValue) => setRegion(itemValue)}
                                 >
                                     {regions.map((item, index) => (
                                         <Picker.Item key={index} label={item.label} value={item.value} style={styles.textPicker} />
@@ -585,29 +661,17 @@ const SetCriteria = ({ navigation }) => {
                                 </Picker>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.optionButtonTieuChi}>
-                            <Text style={styles.textTieuChi}>Thời gian</Text>
-                            <View style={styles.formPicker}>
-                                <Picker
-                                    selectedValue={selectedNoiKhoiHanh}
-                                    onValueChange={(itemValue) => setSelectedNoiKhoiHanh(itemValue)}
-                                >
-                                    {times.map((item, index) => (
-                                        <Picker.Item key={index} label={item.label} value={item.value} style={styles.textPicker} />
-                                    ))}
-                                </Picker>
-                            </View>
-                        </TouchableOpacity>
                     </View>
+
                     <View style={styles.optionsRow}>
                         <TouchableOpacity style={styles.optionButtonTieuChi}>
                             <Text style={styles.textTieuChi}>Ngày bắt đầu</Text>
                             <Pressable style={styles.formPicker} onPress={showDatePickerBD}>
                                 <View style={[styles.rowOption, { alignContent: "center", paddingLeft: 15 }]}><AntDesign name="calendar" size={20} color="black" />
-                                    <Text style={[styles.textPicker, { paddingLeft: 15 }]}>{dateBD.toLocaleDateString()}</Text></View>
+                                    <Text style={[styles.textPicker, { paddingLeft: 15 }]}>{startDate.toLocaleDateString()}</Text></View>
                                 {showBD && (
                                     <DateTimePicker
-                                        value={dateBD}
+                                        value={startDate}
                                         mode="date" // Chỉ hiển thị ngày
                                         display="default" // Kiểu hiển thị của lịch (default, spinner, calendar)
                                         onChange={onChangeBD}
@@ -619,10 +683,10 @@ const SetCriteria = ({ navigation }) => {
                             <Text style={styles.textTieuChi}>Ngày kết thúc</Text>
                             <Pressable style={styles.formPicker} onPress={showDatePickerKT}>
                                 <View style={[styles.rowOption, { alignContent: "center", paddingLeft: 15 }]}><AntDesign name="calendar" size={20} color="black" />
-                                    <Text style={[styles.textPicker, { paddingLeft: 15 }]}>{dateKT.toLocaleDateString()}</Text></View>
+                                    <Text style={[styles.textPicker, { paddingLeft: 15 }]}>{endDate.toLocaleDateString()}</Text></View>
                                 {showKT && (
                                     <DateTimePicker
-                                        value={dateKT}
+                                        value={endDate}
                                         mode="date" // Chỉ hiển thị ngày
                                         display="default" // Kiểu hiển thị của lịch (default, spinner, calendar)
                                         onChange={onChangeKT}
@@ -633,7 +697,7 @@ const SetCriteria = ({ navigation }) => {
                     </View>
 
                     <View style={styles.viewHoanThanh}>
-                        <Pressable style={styles.buttonHoanThanh}>
+                        <Pressable style={styles.buttonHoanThanh} onPress={addPreference}>
                             <Text style={styles.textHoanThanh}>HOÀN THÀNH</Text>
                         </Pressable>
                     </View>
@@ -641,7 +705,7 @@ const SetCriteria = ({ navigation }) => {
 
 
                 </View>
-                <View style={styles.RowChoice}>
+                {/* <View style={styles.RowChoice}>
                     <TouchableOpacity style={styles.optionButton}>
                         <Image
                             source={require('../../../../assets/new.png')}
@@ -677,21 +741,21 @@ const SetCriteria = ({ navigation }) => {
                         />
                         <Text style={styles.textBox}>Khởi hành muộn nhất</Text>
                     </TouchableOpacity>
-                </View>
+                </View> */}
 
             </View>
 
 
-            <View style={styles.banner}>
+            {/* <View style={styles.banner}>
                 {/* <View style={styles.rowBetween}>
                     <Text style={styles.tieuDe}>Dành cho bạn</Text>
                     <Pressable onPress={() => { navigation.navigate("ListTour", { listTour: listMienBac, title: "TOUR DÀNH CHO BẠN" }); }}><Text style={styles.xemTatCa}>Xem tất cả</Text></Pressable>
                 </View> */}
 
                 {/* <TourComponent listTour={listMienBac} navigation={navigation} /> */}
-            </View>
+            {/* </View> */} 
 
-            <View style={styles.banner}>
+            {/* <View style={styles.banner}>
                 <View style={styles.rowBetween}>
                     <Pressable style={[styles.buttonMucMien, { backgroundColor: choosedMien == 0 ? "#3FD0D4" : "#fff" }]} onPress={() => chooseMien(0)}>
                         <Text style={styles.textMucMien}>Miền Bắc</Text>
@@ -703,9 +767,9 @@ const SetCriteria = ({ navigation }) => {
                         <Text style={styles.textMucMien}>Miền Nam</Text>
                     </Pressable>
 
-                </View>
+                </View> */}
 
-                {/* <View style={{ display: choosedMien == 0 ? "block" : "none" }}>
+            {/* <View style={{ display: choosedMien == 0 ? "block" : "none" }}>
                     <Pressable onPress={() => { navigation.navigate("ListTour", { listTour: listMienBac, title: "TOUR MIỀN BẮC" }); }}><Text style={styles.xemTatCaOption}>Xem tất cả</Text></Pressable>
                     <TourComponent listTour={listMienBac} navigation={navigation} />
                 </View>
@@ -722,7 +786,7 @@ const SetCriteria = ({ navigation }) => {
                     <Pressable onPress={() => { navigation.navigate("ListTour", { listTour: listMienTay, title: "TOUR MIỀN TÂY" }); }}><Text style={styles.xemTatCaOption}>Xem tất cả</Text></Pressable>
                     <TourComponent listTour={listMienTay} navigation={navigation} />
                 </View> */}
-            </View>
+            {/* </View> */}
 
 
 

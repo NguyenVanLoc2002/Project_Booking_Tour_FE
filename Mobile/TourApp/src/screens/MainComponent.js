@@ -38,7 +38,7 @@ const MainComponent = () => {
         >
             <Tab.Screen name="HomeTour" component={HomeTour} />
             <Tab.Screen name="SavedList" component={SavedListComponent} />
-            <Tab.Screen name="Bookings" component={BookingComponent} />
+            <Tab.Screen name="Bookings" component={BookingComponent} load="true"/>
             <Tab.Screen name="Notifications" component={NotificationComponent} />
             <Tab.Screen name="Account" component={AccountComponent} />
            

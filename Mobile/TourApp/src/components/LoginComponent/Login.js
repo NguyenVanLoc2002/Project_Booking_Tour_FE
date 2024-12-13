@@ -8,21 +8,23 @@ import authApi from "../../api/authApi";
 
 // import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 // const Tab = createMaterialTopTabNavigator();
-
+import { useAuthContext } from "../../contexts/AuthContext";
 const Login = ({ navigation }) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const {  fetchUserInfo} = useAuthContext();
+    const [email, setEmail] = useState('tranbaotruc2002bc@gmail.com');
+    const [password, setPassword] = useState('123456');
     const [passwordVisible, setPasswordVisible] = useState(false);
     const togglePasswordVisibility = () => {
         setPasswordVisible(!passwordVisible);
     };
-    const handleLogin  = async () => {
+    const handleLogin = async () => {
         try {
             const userData = await authApi.login(email, password);
+            await fetchUserInfo();
             navigation.navigate("TourComponent");
-          } catch (error) {
+        } catch (error) {
             console.error(error.message);
-          }
+        }
     };
     const handleRegister = () => {
         navigation.navigate("Register")
@@ -40,12 +42,12 @@ const Login = ({ navigation }) => {
                     <View style={styles.onlyOne}>
 
                         <Text style={styles.textTitle}>Email<Text style={[styles.textTitle, { color: "red" }]}> *</Text></Text>
-                      
+
                         <TextInput
                             style={[styles.formPicker, { paddingLeft: 15 }]}
                             value={email}
                             onChangeText={(text) => setEmail(text)}
-                            
+
                         />
                     </View>
                     <View style={styles.onlyOne}>
@@ -53,7 +55,7 @@ const Login = ({ navigation }) => {
                         <Text style={styles.textTitle}>Mật khẩu<Text style={[styles.textTitle, { color: "red" }]}> *</Text></Text>
                         <View style={styles.row}>
                             <TextInput
-                                style={[styles.formPickerPass, { paddingLeft: 10, width:150 }]}
+                                style={[styles.formPickerPass, { paddingLeft: 10, width: 250 }]}
                                 value={password}
                                 onChangeText={(text) => setPassword(text)}
                                 secureTextEntry={!passwordVisible}
@@ -66,7 +68,7 @@ const Login = ({ navigation }) => {
                     </View>
                     <Text style={{ fontSize: 14, padding: 10, fontWeight: "500", color: 'gray', textAlign: 'right', }}>Bạn quên mật khẩu?</Text>
                 </View>
-                <Pressable style={styles.button} onPress={() => { handleLogin () }}>
+                <Pressable style={styles.button} onPress={() => { handleLogin() }}>
                     <Text style={{ fontSize: 18, paddingLeft: 10, fontWeight: "500", color: '#fff', textAlign: 'center' }}>ĐĂNG NHẬP</Text>
                 </Pressable>
                 <Text style={{ fontSize: 14, paddingLeft: 10, fontWeight: "500" }}>Bạn chưa có tài khoản?
@@ -124,8 +126,8 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#3FD0D4',
         borderRadius: 10,
-        marginLeft:5,
-        marginRight:5,
+        marginLeft: 5,
+        marginRight: 5,
         justifyContent: 'space-between'
     },
     formPickerPass: {

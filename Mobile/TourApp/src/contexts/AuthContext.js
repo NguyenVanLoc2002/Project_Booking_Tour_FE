@@ -9,7 +9,8 @@ export const useAuthContext = () => {
 
 // AsyncStorage.clear();
 export const AuthContextProvider = ({ children }) => {
-    const [authUser, setAuthUser] = useState("hihi"); 
+    const [authUser, setAuthUser] = useState(); 
+
     useEffect(() => {
         const loadData = async () => {
         
@@ -49,6 +50,7 @@ export const AuthContextProvider = ({ children }) => {
             value={{
                 authUser,
                 setAuthUser,
+                fetchUserInfo
             }}
         >
             {children}
@@ -56,4 +58,4 @@ export const AuthContextProvider = ({ children }) => {
     );
 };
 
-// export default AuthContextProvider;
+export default AuthContextProvider;
