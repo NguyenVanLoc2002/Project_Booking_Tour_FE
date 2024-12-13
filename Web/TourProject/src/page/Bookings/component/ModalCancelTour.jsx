@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 
-const ModalCancelTour = ({ visible, onClose, data }) => {
+const ModalCancelTour = ({ visible, onClose, data, onRefundSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [percent, setPercent] = useState("");
   const [numDay, setNumDay] = useState("");
@@ -121,6 +121,7 @@ const ModalCancelTour = ({ visible, onClose, data }) => {
         }
       );
       message.success("Hoàn tiền thành công!");
+      onRefundSuccess();
       onClose();
     } catch (error) {
       message.error("Có lỗi xảy ra khi hoàn tiền.");
