@@ -246,7 +246,7 @@ const HomeComponent = ({ navigation }) => {
                 </ScrollView>
             </View>
             {
-                recommendTour == [] && (
+                recommendTour != [] && (
                     <View>
                         <View style={styles.banner}>
                             <View style={styles.mucContainer}>

@@ -114,11 +114,13 @@ const ModalCancelTour = ({ visible, onClose, booking }) => {
     return holidays.some((holiday) => holiday.isSame(date, "day"));
   };
 
+  const vndToUsdRate = 24000; 
   const refundBooking = async (bookingId) => {
     try {
       setLoading(true);
-      const response = await axiosInstance.post(
+      await axiosInstance.post(
         `/payments/process-refund?bookingId=${bookingId}`
+        // `https://travelvietnam.io.vn/api/v1/payments/process-refund?bookingId=${bookingId}`,
       );
       Toast.show({
         type: "success",
@@ -143,7 +145,12 @@ const ModalCancelTour = ({ visible, onClose, booking }) => {
       setLoading(false);
     }
   };
-
+  const formatMoney = (data) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(data);
+  };
   return (
     <Modal
       transparent={true}
@@ -180,7 +187,7 @@ const ModalCancelTour = ({ visible, onClose, booking }) => {
                 <Text>{bookingDTO?.bookingId}</Text>
                 <Text>{tourDTO?.name}</Text>
                 <Text>{formatDate(tourDTO?.departureDate)}</Text>
-                <Text>{bookingDTO?.totalAmount} USD</Text>
+                <Text>{formatMoney(bookingDTO?.totalAmount*vndToUsdRate)}</Text>
                 <Text>{numDay} ngày</Text>
               </View>
             </View>
@@ -193,7 +200,7 @@ const ModalCancelTour = ({ visible, onClose, booking }) => {
               <View>
                 <Text>{bookingDTO?.statusBooking}</Text>
                 <Text>{percent}%</Text>
-                <Text>{(bookingDTO?.totalAmount * percent).toFixed(2)} USD</Text>
+                <Text>{formatMoney((bookingDTO?.totalAmount * percent/100)*vndToUsdRate)}</Text>
               </View>
             </View>
           </View>

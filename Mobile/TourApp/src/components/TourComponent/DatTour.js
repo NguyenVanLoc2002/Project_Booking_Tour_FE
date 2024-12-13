@@ -8,40 +8,95 @@ import { Picker } from '@react-native-picker/picker';
 import Feather from '@expo/vector-icons/Feather';
 import axiosInstance from "./../../api/axiosInstance";
 import dayjs from 'dayjs';
+import { useAuthContext } from "../../contexts/AuthContext";
+
+const data = require('./../../../assets/json/dataProvinces.json');
 const DatTour = ({ navigation, route }) => {
+    const { authUser } = useAuthContext();
     const { tour, ticket_tour } = route.params
-    const [user, setUser] = useState(null);
     const [modalMessage, setModalMessage] = useState(""); // Message to show in modal
     const [isModalOpen, setIsModalOpen] = useState(false); // To control modal visibility
-  
-    const [name, setName] = useState(user?.name || "");
-    const [phone, setPhone] = useState(user?.phoneNumber || "");
-    const [email, setEmail] = useState(user?.email || "");
-    const [address, setAddress] = useState(user?.address || "");
-    const listTinh = [
-        { label: 'Hồ Chí Minh', value: 'VN' },
-        { label: 'Long An', value: 'Fran' },
-        { label: 'Tây Ninh', value: 'UK' },
-        { label: 'Hà Nội', value: 'USA' },
-    ]
-    const listQuan = [
-        { label: 'Gò Vấp', value: 'VN' },
-        { label: 'Quận 1', value: 'Fran' },
-        { label: 'Quận 2', value: 'UK' },
-        { label: 'Quận 3', value: 'USA' },
-    ]
-    const listPhuong = [
-        { label: 'Phường 4', value: 'VN' },
-        { label: 'Phường 1', value: 'Fran' },
-        { label: 'Phường 2', value: 'UK' },
-        { label: 'Quận 3', value: 'USA' },
-    ]
-    const [selectedQuocGia, setSelectedQuocGia] = useState(listTinh[0].value);
-    const [selectedQuocTich, setSelectedQuocTich] = useState(listQuan[0].value);
-    const [selectedTinh, setSelectedTinh] = useState("Hồ Chí Minh");
-    const [selectedQuan, setSelectedQuan] = useState("Gò Vấp");
-    const [selectedPhuong, setSelectedPhuong] = useState("Phường 4");
-    
+
+    const [name, setName] = useState(authUser?.name || "");
+    const [phone, setPhone] = useState(authUser?.phoneNumber || "");
+    const [email, setEmail] = useState(authUser?.email || "");
+    const [address, setAddress] = useState(authUser?.address || "");
+
+    const [provinces, setProvinces] = useState([]);
+    const [districts, setDistricts] = useState([]);
+    const [wards, setWards] = useState([]);
+
+    const [selectedProvince, setSelectedProvince] = useState("01");
+    const [selectedDistrict, setSelectedDistrict] = useState("001");
+    const [selectedWard, setSelectedWard] = useState("00001");
+    const [selectedProvinceLabel, setSelectedProvinceLabel] = useState("");
+    const [selectedDistrictLabel, setSelectedDistrictLabel] = useState("");
+    const [selectedWardLabel, setSelectedWardLabel] = useState("");
+    const [addressParts, setAddressParts] = useState(authUser?.address ? authUser?.address.split(" ,") : '');
+
+    useEffect(() => {
+        // Chuyển đổi dữ liệu tỉnh thành mảng phù hợp cho Picker
+        const provinceData = data.map((province) => ({
+            label: province.Name,
+            value: province.Code,
+        }));
+        setProvinces(provinceData);
+        console.log(addressParts)
+        if (addressParts) {
+            setSelectedProvince(provinceData.find((ward) => ward.label === addressParts[3])?.value)
+            setAddress(addressParts[0]);
+            setSelectedDistrictLabel(addressParts[2]);
+            setSelectedWardLabel(addressParts[1]);
+        }
+    }, [addressParts]);
+
+    useEffect(() => {
+        if (selectedProvince) {
+            // Lọc các quận của tỉnh được chọn
+            const selectedProvinceData = data.find((province) => province.Code === selectedProvince);
+            const districtData = selectedProvinceData.District.map((district) => ({
+                label: district.Name,
+                value: district.Code,
+            }));
+            setDistricts(districtData);
+            if (selectedDistrictLabel) {
+                setSelectedDistrict(districtData.find((ward) => ward.label === selectedDistrictLabel)?.value)
+                setSelectedDistrictLabel('');
+            } else {
+                setSelectedDistrict(districtData[1].value)
+            }
+
+            setWards([])
+        } else {
+            setDistricts([]);
+        }
+    }, [selectedProvince]);
+
+    useEffect(() => {
+        if (selectedDistrict) {
+            // Lọc các phường của quận được chọn
+            const selectedDistrictData = data
+                .find((province) => province.Code === selectedProvince)
+                .District.find((district) => district.Code === selectedDistrict);
+            if (selectedDistrictData) {
+                const wardData = selectedDistrictData.Ward.map((ward) => ({
+                    label: ward.Name,
+                    value: ward.Code,
+                }));
+                setWards(wardData);
+                if (selectedWardLabel) {
+                    setSelectedWard(wardData.find((ward) => ward.label === selectedWardLabel)?.value);
+                    setSelectedWardLabel('')
+                } else {
+                    setSelectedWard(wardData[1].value)
+                }
+
+            }
+        } else {
+            setWards([]);
+        }
+    }, [selectedDistrict]);
+
     const [adults, setAdults] = useState(1);
     const [children, setChildren] = useState(0);
     const [toddlers, setToddlers] = useState(0);
@@ -50,25 +105,6 @@ const DatTour = ({ navigation, route }) => {
     const [quantity, setQuantity] = useState(0);
     const vndToUsdRate = 24000; // tỷ giá VND -> USD, ví dụ 1 USD = 24000 VND
 
-    const bookingData = {
-        tourId: tour.tourId,
-        ticketId: ticket_tour.ticketId,
-        quantity: quantity,
-        adults: adults,
-        children: children,
-        toddlers: toddlers,
-        infants: infants,
-        totalAmount: total / vndToUsdRate,
-        customerId: user?.userId || null,
-        email: email,
-        userName: name,
-        phoneNumber: phone,
-        city: selectedTinh,
-        district: selectedQuan,
-        ward: selectedPhuong,
-        address: address,
-    };
-    console.log("booking Tour: ", bookingData);
     const ascAdults = () => setAdults((prev) => prev + 1);
     const descAdults = () => setAdults((prev) => (prev > 1 ? prev - 1 : 1));
     const ascChildren = () => setChildren((prev) => prev + 1);
@@ -78,12 +114,27 @@ const DatTour = ({ navigation, route }) => {
     const ascInfants = () => setInfants((prev) => prev + 1);
     const descInfants = () => setInfants((prev) => (prev > 0 ? prev - 1 : 0));
 
-    const formatDate = (dateString) => {
+    const formatDate = (inputDate) => {
+        let date;
 
-        // Đảm bảo luôn hiển thị 2 chữ số cho ngày và tháng
-        const formattedDay = dateString[2].toString().padStart(2, "0");
-        const formattedMonth = dateString[1].toString().padStart(2, "0");
-        return `${formattedDay}/${formattedMonth}/${dateString[0]}`;
+        // Kiểm tra loại dữ liệu của inputDate
+        if (Array.isArray(inputDate)) {
+            // Nếu inputDate là mảng [year, month, day]
+            const [year, month, day] = inputDate;
+            date = new Date(year, month - 1, day); // Lưu ý: Tháng trong Date() bắt đầu từ 0
+        } else if (typeof inputDate === 'string') {
+            // Nếu inputDate là chuỗi "YYYY-MM-DD"
+            date = new Date(inputDate);
+        } else {
+            throw new Error('Invalid date format'); // Xử lý trường hợp không hợp lệ
+        }
+
+        // Định dạng ngày thành dd/MM/yyyy
+        const day = String(date.getDate()).padStart(2, '0'); // Đảm bảo 2 chữ số
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng +1
+        const year = date.getFullYear();
+
+        return `${day}/${month}/${year}`;
     };
     function addDays(dateString, daysToAdd) {
         let date = dayjs(`${dateString[0]}-${dateString[1]}-${dateString[2]}`);
@@ -103,6 +154,26 @@ const DatTour = ({ navigation, route }) => {
         }
 
         try {
+            const bookingData = {
+                tourId: tour.tourId,
+                ticketId: ticket_tour.ticketId,
+                quantity: quantity,
+                adults: adults,
+                children: children,
+                toddlers: toddlers,
+                infants: infants,
+                totalAmount: total / vndToUsdRate,
+                customerId: authUser?.userId || null,
+                email: email,
+                userName: name,
+                phoneNumber: phone,
+                city: provinces.find((ward) => ward.value === selectedProvince)?.label,
+                district: districts.find((ward) => ward.value === selectedDistrict)?.label,
+                ward: wards.find((ward) => ward.value === selectedWard)?.label,
+                address: address,
+            };
+            console.log(bookingData);
+            console.log(adults)
             // Assuming `bookTour` is an async function that makes the API call
             const response = await bookTour(bookingData);
             console.log("API Response:", response);
@@ -120,6 +191,7 @@ const DatTour = ({ navigation, route }) => {
     };
 
     const bookTour = async (bookingData) => {
+
         try {
             const response = await axiosInstance.post(
                 "booking/bookTour",
@@ -144,24 +216,24 @@ const DatTour = ({ navigation, route }) => {
         }
     };
 
-    useEffect(() => {
-        const fetchUserInfo = async () => {
-            try {
-                const response = await axiosInstance.get("/customers/by-email");
-                console.log(response.data);
-                setName(response.data.name);
-                setPhone(response.data.phoneNumber);
-                setEmail(response.data.email);
-                setAddress(response.data.address);
-                setUser(response.data);
-                return response.data;
+    // useEffect(() => {
+    //     const fetchUserInfo = async () => {
+    //         try {
+    //             const response = await axiosInstance.get("/customers/by-email");
+    //             console.log(response.data);
+    //             setName(response.data.name);
+    //             setPhone(response.data.phoneNumber);
+    //             setEmail(response.data.email);
+    //             setAddress(response.data.address);
+    //             setUser(response.data);
+    //             return response.data;
 
-            } catch (error) {
-                throw new Error("Failed to fetch user info");
-            }
-        };
-        fetchUserInfo();
-    }, []);
+    //         } catch (error) {
+    //             throw new Error("Failed to fetch user info");
+    //         }
+    //     };
+    //     fetchUserInfo();
+    // }, []);
     useEffect(() => {
         const { total, quantity } = calculateTotal();
         setTotal(total);
@@ -220,7 +292,7 @@ const DatTour = ({ navigation, route }) => {
                                 style={styles.actionButton}
                                 onPress={() => {
                                     setIsModalOpen(false);
-                                    navigation.navigate("Bookings", load="true");
+                                    navigation.navigate("Bookings", load = "true");
                                 }}
 
                             >
@@ -297,7 +369,7 @@ const DatTour = ({ navigation, route }) => {
                         <TextInput
                             style={[styles.formPicker, { paddingLeft: 15 }]}
                             value={name}
-                            defaultValue={user?.name}
+                            defaultValue={authUser?.name}
                             onChangeText={setName}
                         />
                     </View>
@@ -323,10 +395,10 @@ const DatTour = ({ navigation, route }) => {
                             <Text style={styles.textTitle}>Tỉnh/ Thành phố</Text>
                             <View style={styles.formPicker}>
                                 <Picker
-                                    selectedValue={selectedQuocGia}
-                                    onValueChange={(itemValue) => setSelectedQuocGia(itemValue)}
+                                    selectedValue={selectedProvince}
+                                    onValueChange={(itemValue) => setSelectedProvince(itemValue)}
                                 >
-                                    {listTinh.map((item, index) => (
+                                    {provinces.map((item, index) => (
                                         <Picker.Item key={index} label={item.label} value={item.value} style={styles.textPicker} />
                                     ))}
                                 </Picker>
@@ -336,10 +408,10 @@ const DatTour = ({ navigation, route }) => {
                             <Text style={styles.textTitle}>Quận/Huyện</Text>
                             <View style={styles.formPicker}>
                                 <Picker
-                                    selectedValue={selectedQuocTich}
-                                    onValueChange={(itemValue) => setSelectedQuocTich(itemValue)}
+                                    selectedValue={selectedDistrict}
+                                    onValueChange={(itemValue) => setSelectedDistrict(itemValue)}
                                 >
-                                    {listQuan.map((item, index) => (
+                                    {districts.map((item, index) => (
                                         <Picker.Item key={index} label={item.label} value={item.value} style={styles.textPicker} />
                                     ))}
                                 </Picker>
@@ -350,10 +422,10 @@ const DatTour = ({ navigation, route }) => {
                         <Text style={styles.textTitle}>Phường/Xã</Text>
                         <View style={styles.formPicker}>
                             <Picker
-                                selectedValue={selectedQuocTich}
-                                onValueChange={(itemValue) => setSelectedQuocTich(itemValue)}
+                                selectedValue={selectedWard}
+                                onValueChange={(itemValue) => setSelectedWard(itemValue)}
                             >
-                                {listPhuong.map((item, index) => (
+                                {wards.map((item, index) => (
                                     <Picker.Item key={index} label={item.label} value={item.value} style={styles.textPicker} />
                                 ))}
                             </Picker>
@@ -459,7 +531,7 @@ const DatTour = ({ navigation, route }) => {
             <View style={styles.priceBox}>
                 <Text style={{ fontSize: 15, paddingLeft: 10, color: "red", fontWeight: "500" }}>{formatCurrency(total)}</Text>
 
-                <Pressable style={styles.buttonDat} onPress={() => { handleBookTour()}}>
+                <Pressable style={styles.buttonDat} onPress={() => { handleBookTour() }}>
                     <Text style={styles.textDat}>ĐẶT NGAY</Text>
                 </Pressable>
             </View>

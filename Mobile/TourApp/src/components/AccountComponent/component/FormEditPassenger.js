@@ -171,9 +171,6 @@ const FormEditPassenger = ({ navigation, route }) => {
         }
     }, [selectedDistrict]);
 
-    const hi = () => {
-        console.log('hi')
-    };
     return (
 
         <ScrollView style={{ backgroundColor: "#fafafa", height: "100%" }}>
