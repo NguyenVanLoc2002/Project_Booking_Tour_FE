@@ -7,7 +7,7 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import useTour from "../../hooks/useTour";
 import Ionicons from '@expo/vector-icons/Ionicons';
 const ListTour = ({ navigation, route }) => {
-    const { listTour, title ,region,authUser} = route.params
+    const { listTour, title ,region,authUser,name} = route.params
     const {totalPages, tourListSort, fetchToursSort } = useTour();
     const [currentPage, setCurrentPage] = useState(1);
     const [toursPerPage, setToursPerPage] = useState(10);
@@ -22,7 +22,7 @@ const ListTour = ({ navigation, route }) => {
 
     useEffect(() => {
         const fetchTour = async () => {
-            await fetchToursSort(region, currentPage, toursPerPage, sortType,authUser)
+            await fetchToursSort(region, currentPage, toursPerPage, sortType,authUser,name)
         };
         fetchTour();
     }, [region, currentPage, toursPerPage, sortType]);
