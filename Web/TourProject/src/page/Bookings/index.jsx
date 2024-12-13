@@ -274,6 +274,13 @@ function Bookings() {
     }
   };
 
+  // Callback function to refresh data after refund
+  const handleRefundSuccess = () => {
+    if (user?.userId) {
+      getCustomerProcessingBookings(user.userId);
+      getCustomerPaidAndCancelledBookings(user.userId);
+    }
+  };
 
   useEffect(() => {
     if (user?.userId) {
@@ -338,6 +345,7 @@ function Bookings() {
         visible={isModalCancelVisible}
         onClose={handleCloseCancel}
         data={tourData}
+        onRefundSuccess={handleRefundSuccess} 
       />
       <ChatBot />
       <Footer />

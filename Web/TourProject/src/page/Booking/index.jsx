@@ -14,6 +14,7 @@ function Booking() {
   const { tour } = location.state || {};
   const { user } = useUser();
 
+
   console.log("ticket: ", ticket);
   console.log("tour: ", tour);
 
@@ -89,7 +90,7 @@ function Booking() {
     children: children,
     toddlers: toddlers,
     infants: infants,
-    totalAmount: total /vndToUsdRate,
+    totalAmount: total / vndToUsdRate,
     customerId: user?.userId || null,
     email: user?.email || email,
     userName: user?.name || name,
