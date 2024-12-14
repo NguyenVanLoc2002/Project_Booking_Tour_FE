@@ -4,11 +4,12 @@ import axios from "axios";
 import Header from "../../layouts/Header";
 import Menu from "../../layouts/Menu";
 import Footer from "../../layouts/Footer";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useUser } from "../../contexts/UserContext";
 import ChatBot from "../../layouts/ChatBot";
 
 function Booking() {
+  const navigate = useNavigate();
   const location = useLocation();
   const { ticket } = location.state || {};
   const { tour } = location.state || {};
@@ -92,15 +93,19 @@ function Booking() {
     infants: infants,
     totalAmount: total / vndToUsdRate,
     customerId: user?.userId || null,
-    email: user?.email || email,
-    userName: user?.name || name,
-    phoneNumber: user?.phoneNumber || phone,
+    email: email || user?.email ,
+    userName:name || user?.name  ,
+    phoneNumber:phone || user?.phoneNumber  ,
     city: selectedTinh,
     district: selectedQuan,
     ward: selectedPhuong,
-    address: user?.address || address,
+    address:address || user?.address ,
   };
   console.log("booking Tour: ", bookingData);
+
+  const handleNavigateBooking = ()=>{
+    navigate("/bookings");
+  }
 
   const handleBookTour = async () => {
     // Check if any of the required fields are empty
@@ -120,6 +125,7 @@ function Booking() {
         "Đặt tour thành công. Vui lòng kiểm tra email để xác nhận thông tin đặt tour và thực hiện thanh toán."
       );
       setIsModalOpen(true); // Open modal with success message
+      handleNavigateBooking();
     } catch (error) {
       console.error("Error calling bookTour API:", error);
       setModalMessage("Đã xảy ra lỗi khi đặt tour. Vui lòng thử lại.");
@@ -471,7 +477,7 @@ function Booking() {
                 </label>
                 <input
                   type="text"
-                  value={user?.name}
+                  value={name}
                   onChange={(e) => setName(e.target.value)}
                   style={{
                     padding: "10px",
@@ -487,7 +493,7 @@ function Booking() {
                 </label>
                 <input
                   type="text"
-                  value={user?.phone}
+                  value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   style={{
                     padding: "10px",
@@ -503,7 +509,7 @@ function Booking() {
                 </label>
                 <input
                   type="email"
-                  value={user?.email}
+                  value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   style={{
                     padding: "10px",
@@ -593,7 +599,7 @@ function Booking() {
                 </label>
                 <input
                   type="text"
-                  value={user?.address}
+                  value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   style={{
                     padding: "10px",
