@@ -12,8 +12,8 @@ import axiosInstance from "../../api/axiosInstance";
 import { useAuthContext } from "../../contexts/AuthContext";
 const HomeComponent = ({ navigation }) => {
     const { authUser } = useAuthContext();
-
-    const { centralTours, northernTours, southernTours, fetchToursByRegion } = useTour();
+    const [name, setName] = useState("");
+    const { centralTours, northernTours, southernTours, fetchToursByRegion, fetchToursSort ,tourListSort} = useTour();
     const [centralTourList, setCentralTourList] = useState([]);
     const [northernTourList, setNorthernTourList] = useState([])
     const [southernTourList, setSouthernTourList] = useState([])
@@ -21,32 +21,25 @@ const HomeComponent = ({ navigation }) => {
 
     const [i, seti] = useState(false);
 
+
     useEffect(() => {
         const fetchRecommendation = async () => {
 
             if (!authUser) {
-
-                // setRecommendTour([]); // Nếu user chưa đăng nhập, không gọi API
                 return;
             }
             const url = `/recommendation/${authUser?.userId}?page=1&size=10`;
-
             try {
-                console.log('au', authUser)
                 const response = await axiosInstance.get(url);
-                console.log('re', response.data.content)
                 if (response.data.content.length === 0) {
-                    // Xử lý khi không có gợi ý
-                    // setRecommendTour([]);
                     console.info("No recommendations found for this user");
                 } else {
                     setRecommendTour(response.data.content);
-                    console.log('re', response.data.content);
                     seti(true);
                 }
             } catch (error) {
                 console.error("Failed to fetch recommendation:", error);
-                // setRecommendTour([]);
+
             }
         };
         if (!i) {
@@ -148,7 +141,15 @@ const HomeComponent = ({ navigation }) => {
     const chooseOption = (a) => {
         setChoosedOption(a);
     };
-
+    const handleSearch = async() => {
+        await fetchTour();
+        console.log(tourListSort)
+        navigation.navigate("ListTour", { listTour: tourListSort, title: "TOUR THEO TÌM KIẾM", region: "NAME", authUser: authUser, name: name});
+        setName("");
+    };
+    const fetchTour = async () => {
+        await fetchToursSort('NAME', 1, 10, "",authUser,name)
+    };
 
     return (
         <ScrollView style={{ backgroundColor: "#c", height: "100%" }}>
@@ -157,10 +158,14 @@ const HomeComponent = ({ navigation }) => {
                 uri: "https://res.cloudinary.com/doqbelkif/image/upload/v1726601540/656c046a-02ef-4286-8f9f-34ca7ef6e82a.png"
             }} resizeMode="cover" style={styles.imageBia}>
                 <View style={styles.header}>
-                    <FontAwesome5 name={"search"} size={24} color={"black"} />
-                    <TextInput placeholder="Nhập vào đây để tìm kiếm" style={styles.buttonSearch}>
-
-                    </TextInput>
+                    
+                    <TextInput
+                        placeholder="Nhập vào đây để tìm kiếm"
+                        style={styles.buttonSearch}
+                        value={name}
+                        onChangeText={setName}
+                    />
+                    <Pressable onPress={() => { handleSearch() }}><FontAwesome5 name={"search"} size={24} color={"black"} /></Pressable>
                 </View>
             </ImageBackground>
 
@@ -246,7 +251,7 @@ const HomeComponent = ({ navigation }) => {
                 </ScrollView>
             </View>
             {
-                recommendTour == [] && (
+                recommendTour != [] && (
                     <View>
                         <View style={styles.banner}>
                             <View style={styles.mucContainer}>

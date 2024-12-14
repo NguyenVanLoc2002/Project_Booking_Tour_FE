@@ -5,8 +5,20 @@ import ListBooking from "./component/ListBooking";
 import axiosInstance from "./../../api/axiosInstance";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useAuthContext } from "../../contexts/AuthContext";
+import { useNavigation } from "@react-navigation/native";
+
 const BookingComponent = ({ navigation, route }) => {
     // const { load } = route.params
+    useEffect(() => {
+        // Lắng nghe sự kiện focus
+        const unsubscribe = navigation.addListener("focus", () => {
+          reload(); // Gọi hàm xử lý khi focus
+        });
+    
+        // Dọn dẹp khi unmount
+        // return unsubscribe;
+      }, [navigation]);
+
     const [pendingBookings, setPendingBookings] = useState([]); // Booking chờ xác nhận
     const [confirmedBookings, setConfirmedBookings] = useState([]); // Booking đã xác nhận
     const [paidBookings, setPaidBookings] = useState([]); // Booking đã thanh toán
@@ -14,7 +26,7 @@ const BookingComponent = ({ navigation, route }) => {
     const [listBooking, setListBooking] = useState([]); // Booking đã hủy
     const vndToUsdRate = 24000; // tỷ giá VND -> USD, ví dụ 1 USD = 24000 VND
     const { authUser } = useAuthContext();
-
+    const [selectTrangThai, setSelectTrangThai] = useState(1);
     const getCustomerProcessingBookings = async (userId) => {
         try {
             const response = await axiosInstance.get(
@@ -87,7 +99,7 @@ const BookingComponent = ({ navigation, route }) => {
         getCustomerPaidAndCancelledBookings(authUser.userId);
     }
 
-    const [selectTrangThai, setSelectTrangThai] = useState(1);
+
     const setTrangThai = (loai) => {
         setSelectTrangThai(loai);
         if (loai == 1)
@@ -99,10 +111,7 @@ const BookingComponent = ({ navigation, route }) => {
         if (loai == 4)
             setListBooking(refundedBookings);
     };
-    const getListByTrangThai = (loai) => {
 
-
-    };
     const loaiBooking = (loai) => {
         if (loai == 1)
             return "Chờ xác nhận"

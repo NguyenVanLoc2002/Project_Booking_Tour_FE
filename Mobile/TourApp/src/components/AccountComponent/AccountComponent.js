@@ -91,7 +91,7 @@ const AccountComponent = ({ navigation, route }) => {
                     </View>
 
                 </Pressable>
-                <Pressable style={[styles.box, styles.borderTop]}>
+                <Pressable style={[styles.box, styles.borderTop]}  onPress={() => { navigation.navigate("ChangePasswordScreen"); }}>
                     <Ionicons name="shield-checkmark-outline" size={24} color="black" />
                     <View style={styles.col}>
                         <Text style={styles.textTitle}>Mật khẩu và bảo mật</Text>

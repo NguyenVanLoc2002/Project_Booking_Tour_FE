@@ -79,7 +79,7 @@ const useGroup = () => {
         return tours; // Không sắp xếp
     }
   };
-  const fetchToursSort = async (region, currentPage, toursPerPage, sortType, authUser) => {
+  const fetchToursSort = async (region, currentPage, toursPerPage, sortType, authUser,name) => {
 
     try {
       if (region == "RECOMMEND") {
@@ -88,6 +88,22 @@ const useGroup = () => {
         const response = await axiosInstance.get(url);
 
         setTourListSort(setSortType(response.data.content, sortType)); // Lưu danh sách tour
+        setTotalPages(response.data?.totalPages || 0);
+      }
+      else if(region == "NAME"){
+        const url = `tours/by-name`;
+        const params = {
+          page: currentPage,
+          size: toursPerPage,
+          name: name
+        };
+        const response = await axiosInstance.get(url,{params});
+        if(sortType==""){
+          setTourListSort(response.data.content); 
+        }else {
+          setTourListSort(setSortType(response.data.content, sortType)); // Lưu danh sách tour
+        }
+       
         setTotalPages(response.data?.totalPages || 0);
       }
       else {
@@ -131,7 +147,6 @@ const useGroup = () => {
   
         // Đợi tất cả các tour chi tiết
         const toursData = await Promise.all(tourPromises);
-        console.log('tourdata',toursData)
         const savedTour = setSortType(toursData, sortType) ; 
         setSaveTour(savedTour);
       
