@@ -15,7 +15,6 @@ function Booking() {
   const { tour } = location.state || {};
   const { user } = useUser();
 
-
   console.log("ticket: ", ticket);
   console.log("tour: ", tour);
 
@@ -93,19 +92,19 @@ function Booking() {
     infants: infants,
     totalAmount: total / vndToUsdRate,
     customerId: user?.userId || null,
-    email: email || user?.email ,
-    userName:name || user?.name  ,
-    phoneNumber:phone || user?.phoneNumber  ,
+    email: email || user?.email,
+    userName: name || user?.name,
+    phoneNumber: phone || user?.phoneNumber,
     city: selectedTinh,
     district: selectedQuan,
     ward: selectedPhuong,
-    address:address || user?.address ,
+    address: address || user?.address,
   };
   console.log("booking Tour: ", bookingData);
 
-  const handleNavigateBooking = ()=>{
-    navigate("/bookings");
-  }
+  const handleNavigateBooking = () => {
+    if (user) navigate("/bookings");
+  };
 
   const handleBookTour = async () => {
     // Check if any of the required fields are empty
@@ -125,7 +124,6 @@ function Booking() {
         "Đặt tour thành công. Vui lòng kiểm tra email để xác nhận thông tin đặt tour và thực hiện thanh toán."
       );
       setIsModalOpen(true); // Open modal with success message
-      handleNavigateBooking();
     } catch (error) {
       console.error("Error calling bookTour API:", error);
       setModalMessage("Đã xảy ra lỗi khi đặt tour. Vui lòng thử lại.");
@@ -206,7 +204,10 @@ function Booking() {
         <p className="text-center text-lg mb-4">{message}</p>
         <button
           className="w-full py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          onClick={() => setIsModalOpen(false)}
+          onClick={() => {
+            setIsModalOpen(false);
+            handleNavigateBooking();
+          }}
         >
           Đóng
         </button>
